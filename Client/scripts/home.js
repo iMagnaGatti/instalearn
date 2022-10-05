@@ -1,7 +1,3 @@
-function start()
-{
-    document.getElementById("prova").innerHTML="prova";
-}
 function signup()
 {
     window.location.href="./signup.html";
