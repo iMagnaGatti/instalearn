@@ -1,3 +1,4 @@
+
 function login()
 {
     let email=document.getElementById('email').value;
@@ -8,11 +9,13 @@ function login()
     xhr.setRequestHeader("Content-Type","application/json");
     xhr.onload=()=>{
         console.log(JSON.parse(xhr.response).id);
-    }
+        let id=JSON.parse(xhr.response).id;
+        setCookie("instalearn_id",id,0.5);
+    };
     xhr.send(JSON.stringify(
         {
             email:email,
             password:pass
         }
-    ))
+    ));
 }

@@ -5,13 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="../scripts/login.js"></script>
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/login.js">
+        controlla();
+    </script>
 </head>
 <body>
+    <div id="form" style="visibility: hidden">
     <label for="email">Email:</label>
     <input type="email" id="email"><br>
     <label for="password">Password:</label>
     <input type="password" id="password"><br>
     <button onclick="login()">LOG IN</button>
+    </div>
 </body>
 </html>
