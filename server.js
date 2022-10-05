@@ -6,7 +6,15 @@ const express= require('express')
 const app=express()
 const mongoose = require('mongoose')
 const bodyParser=require('body-parser')
-const jsonParser=bodyParser.json()
+const bcrypt=require('bcrypt')
+var CryptoJS = require("crypto-js");
+const SimpleCrypto=require('simple-crypto-js').default
+const _secretKey = "YOURKEYHERE"; //key for create hash key 
+const simpleCrypto = new SimpleCrypto(_secretKey);
+const saltRounds=12
+var createHashPwd = function (password) {
+    return bcrypt.hashSync(password, saltRounds);
+  };
 const urlencodedParser = bodyParser.urlencoded({ extended: true })
 
 mongoose.connect(process.env.DATABASE_URL,{useNewUrlParser: true})
@@ -36,7 +44,8 @@ app.post('/signup',express.json(),(req,res)=>{
     const nome=req.body.nome;
     const cognome=req.body.cognome;
     const email=req.body.email;
-    const password=req.body.password;
+    //const password=createHashPwd(req.body.password);
+    const password=CryptoJS.AES.encrypt(req.body.password,_secretKey).toString();
     db.collection('users').insertOne(
         {
             nome:nome,
@@ -47,5 +56,21 @@ app.post('/signup',express.json(),(req,res)=>{
     );
     res.sendStatus(200);
 })
+app.post('/login',express.json(),async (req,res)=>{
+    const email=req.body.email;
+    const password=req.body.password;
+    const ris=await db.collection('users').findOne({email:email});
+    if(ris){
+        const decriptata=CryptoJS.AES.decrypt(ris.password,_secretKey).toString(CryptoJS.enc.Utf8);
+        if(decriptata==password){
+        res.send({id: ris._id});
+        }
+        else
+        res.sendStatus(500);
+    }
+    else{
+        res.sendStatus(500);
+    }
+});
 
 app.listen(process.env.PORT||3000)
