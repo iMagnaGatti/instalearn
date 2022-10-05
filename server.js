@@ -39,22 +39,30 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-app.post('/signup',express.json(),(req,res)=>{
+app.post('/signup',express.json(),async (req,res)=>{
     console.log(req.body);
     const nome=req.body.nome;
     const cognome=req.body.cognome;
     const email=req.body.email;
     //const password=createHashPwd(req.body.password);
-    const password=CryptoJS.AES.encrypt(req.body.password,_secretKey).toString();
-    db.collection('users').insertOne(
-        {
-            nome:nome,
-            cognome:cognome,
-            email:email,
-            password: password
-        }
-    );
-    res.sendStatus(200);
+    
+    const risulatato=(await db.collection("users").findOne({email:email}))
+    if(risulatato){
+
+        res.sendStatus(505);
+    }else{
+        const password=CryptoJS.AES.encrypt(req.body.password,_secretKey).toString();
+        db.collection('users').insertOne(
+            {
+                nome:nome,
+                cognome:cognome,
+                email:email,
+                password: password
+            }
+        );
+        res.sendStatus(200);
+    }
+
 })
 app.post('/login',express.json(),async (req,res)=>{
     const email=req.body.email;
