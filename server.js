@@ -82,34 +82,30 @@ app.post('/login',express.json(),async (req,res)=>{
     }
 });
 app.post('/cercaInsegnante',express.json(),async (req,res)=>{
-    const topic=req.body.topic;
+    const topic_id=req.body.topic;
     const skill=req.body.skill;
     const user_id=req.body.id;
-    const topic_id=db.collection('topic').findOne({nome:skill});
     if(!topic_id)
     res.sendStatus(500);
-    const lista_user_id=db.collection('skill').aggregate([
-
+    const ris=await db.collection('skills').find({topic_id:topic_id,user_id:{$ne:user_id}});
+    if(ris)
+    {
+        var arr=[];
+        for(i in ris)
         {
-            $match:{topic:id_topic,skill:{$gte:skill}}
-        },
-        {
-            $lookup: 
+            let tot=await db.collection('users').findOne({_id:ris.user_id});
+            if(tot)
             {
-                from: 'users',
-                localField:'id_user',
-                foreignField:'_id',
-                pipeline:[
-                    $project : {username:1,_id:0,nome:0,cognome:0,password:0}
-                ],
-                as: 'user'
+                tot["rank"]=ris.rank;
+                arr.push(tot);
             }
-        },
-        {
-            $project:{id_user:1,skill:1,id_topic:0,_id:0}
         }
-    ]).pretty();
+        console.log(arr);
+        res.send(arr);
 
+    }
+    else
+    res.sendStatus(500);
 
 });
 app.listen(process.env.PORT||3000)
