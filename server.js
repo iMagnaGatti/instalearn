@@ -9,6 +9,7 @@ const mongoose = require('mongoose')
 const bodyParser=require('body-parser')
 const bcrypt=require('bcrypt')
 var CryptoJS = require("crypto-js");
+var ObjectId=mongoose.Types.ObjectId;
 const SimpleCrypto=require('simple-crypto-js').default
 const _secretKey = process.env.SECRET_KEY; //key for create hash key 
 const simpleCrypto = new SimpleCrypto(_secretKey);
@@ -82,27 +83,28 @@ app.post('/login',express.json(),async (req,res)=>{
     }
 });
 app.post('/cercaInsegnante',express.json(),async (req,res)=>{
-    const topic_id=req.body.topic;
+    const topic_id=req.body.topic_id;
     const skill=req.body.skill;
-    const user_id=req.body.id;
-    if(!topic_id)
-    res.sendStatus(500);
+    const user_id=req.body.user_id;
     const ris=await db.collection('skills').find({topic_id:topic_id,user_id:{$ne:user_id}});
     if(ris)
     {
         var arr=[];
-        for(i in ris)
+        const risultati=await ris.toArray();
+        for await (const doc of risultati)
         {
-            let tot=await db.collection('users').findOne({_id:ris.user_id});
+            
+            const tot=await db.collection('users').findOne({_id:new ObjectId(doc.user_id)});
+            
             if(tot)
             {
-                tot["rank"]=ris.rank;
-                arr.push(tot);
+                await arr.push({username:tot.username,rank:doc.rank});
+                //console.log(arr);
             }
-        }
-        console.log(arr);
-        res.send(arr);
 
+        };
+        //console.log(arr);
+        res.send(arr);
     }
     else
     res.sendStatus(500);
