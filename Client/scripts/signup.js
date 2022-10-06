@@ -15,10 +15,14 @@ function signup()
     
         xhr.setRequestHeader("Accept", "application/json");
         xhr.setRequestHeader("Content-Type", "application/json");
-    
+        
         xhr.onload = () =>
         {
+            if(xhr.status==505){
+                alert("la mail è già registrata");
+            }else{
                 alert("Iscritto correttamente");
+            }
         }
         xhr.send(JSON.stringify({
             nome:nome,
@@ -26,5 +30,6 @@ function signup()
             email:email,
             password:pass
         }));
+        
     }
 }
