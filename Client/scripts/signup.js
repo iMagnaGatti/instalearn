@@ -6,8 +6,21 @@ function signup()
     let email=document.getElementById('email').value;
     let pass=document.getElementById('password').value;
     let pass2=document.getElementById('password2').value;
+    
+    let controllo=(pass.lenght>=8);
+    let maiuscola=false,numero=false;
+    for(var i=0;i<pass.lenght;i++){
+        if(pass[i]>='A'&&pass[i]<='Z')maiuscola=true;
+        if(pass[i]>='0'&&pass[i]<='9')numero=true;
+    }
+    if(!maiuscola)controllo=false;
+    if(!numero)controllo=false;
+
     if(pass!=pass2)
     alert("Errore, le password devono corrispondere")
+    else if(!controllo){
+        alert("la password deve rispettare i seguenti requisiti:\n-Lunghezza di almeno 8 caratteri\n-Almeno una lettera maiuscola\n-Almeno un numero");
+    }
     else{
 
         let xhr = new XMLHttpRequest();

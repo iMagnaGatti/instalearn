@@ -8,11 +8,9 @@ function login()
     xhr.setRequestHeader("Accept","application/json");
     xhr.setRequestHeader("Content-Type","application/json");
     xhr.onload=()=>{
-        if(xhr.status==200){
         console.log(JSON.parse(xhr.response).id);
         let id=JSON.parse(xhr.response).id;
         setCookie("instalearn_id",id,0.5);
-        }
     };
     xhr.send(JSON.stringify(
         {
