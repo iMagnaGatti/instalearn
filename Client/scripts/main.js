@@ -1,3 +1,4 @@
+const server="http://localhost:3000";
 function signup()
 {
     window.location.href="./signup.html";
@@ -40,3 +41,36 @@ function setCookie(cname, cvalue, exdays) {
     let expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
   }
+
+function controlla(cname)
+{
+    if(getCookie(cname==""))
+    document.getElementById('form').setAttribute("style","visibility:visible");
+    else
+    {
+
+    }
+    
+}
+
+function getUser()
+{
+    const lol=function(xhr)
+    {
+        if(xhr.status==200)
+        alert("fatta");
+        else
+        alert("errore");
+    }
+    post(server+"/getUser",{id:getCookie("instalearn_id")},lol);
+}
+function post(link,data,fun)
+{
+    let xhr=XMLHttpRequest();
+    xhr.setRequestHeader("Accept","application/json");
+    xhr.setAttribute("Content-Type","application/json");
+    xhr.open("POST",link);
+    xhr.onload=fun;
+    xhr.send(data);
+    return xhr;
+}

@@ -2,6 +2,7 @@ if(process.env.NODE_ENV !=='production')
 {
     require('dotenv').config()
 }
+
 const express= require('express')
 const app=express()
 const mongoose = require('mongoose')
@@ -9,7 +10,7 @@ const bodyParser=require('body-parser')
 const bcrypt=require('bcrypt')
 var CryptoJS = require("crypto-js");
 const SimpleCrypto=require('simple-crypto-js').default
-const _secretKey = "YOURKEYHERE"; //key for create hash key 
+const _secretKey = process.env.SECRET_KEY; //key for create hash key 
 const simpleCrypto = new SimpleCrypto(_secretKey);
 const saltRounds=12
 var createHashPwd = function (password) {
@@ -72,5 +73,35 @@ app.post('/login',express.json(),async (req,res)=>{
         res.sendStatus(500);
     }
 });
+app.post('/cercaInsegnante',express.json(),async (req,res)=>{
+    const topic=req.body.topic;
+    const skill=req.body.skill;
+    const user_id=req.body.id;
+    const topic_id=db.collection('topic').findOne({nome:skill});
+    if(!topic_id)
+    res.sendStatus(500);
+    const lista_user_id=db.collection('skill').aggregate([
 
+        {
+            $match:{topic:id_topic,skill:{$gte:skill}}
+        },
+        {
+            $lookup: 
+            {
+                from: 'users',
+                localField:'id_user',
+                foreignField:'_id',
+                pipeline:[
+                    $project : {username:1,_id:0,nome:0,cognome:0,password:0}
+                ],
+                as: 'user'
+            }
+        },
+        {
+            $project:{id_user:1,skill:1,id_topic:0,_id:0}
+        }
+    ]).pretty();
+
+
+});
 app.listen(process.env.PORT||3000)
