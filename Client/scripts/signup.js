@@ -4,21 +4,26 @@ function signup()
     let nome=document.getElementById('nome').value;
     let cognome=document.getElementById('cognome').value;
     let email=document.getElementById('email').value;
-    let pass=document.getElementById('password').value;
-    let pass2=document.getElementById('password2').value;
+    var pass=document.getElementById('password').value.toString();
+    var pass2=document.getElementById('password2').value.toString();
     
-    let controllo=(pass.lenght>=8);
+    var controllo=(pass.length>=8);
     let maiuscola=false,numero=false;
-    for(var i=0;i<pass.lenght;i++){
+    console.log(controllo);
+    for(var i=0;i<pass.length;i++){
         if(pass[i]>='A'&&pass[i]<='Z')maiuscola=true;
         if(pass[i]>='0'&&pass[i]<='9')numero=true;
     }
     if(!maiuscola)controllo=false;
+    console.log("Maiuscola:" + controllo);
+
     if(!numero)controllo=false;
+    console.log("Numero:" + controllo);
+
 
     if(pass!=pass2)
     alert("Errore, le password devono corrispondere")
-    else if(false){
+    else if(!controllo){
         alert("la password deve rispettare i seguenti requisiti:\n-Lunghezza di almeno 8 caratteri\n-Almeno una lettera maiuscola\n-Almeno un numero");
     }
     else{
