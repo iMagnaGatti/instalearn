@@ -18,7 +18,7 @@ function signup()
 
     if(pass!=pass2)
     alert("Errore, le password devono corrispondere")
-    else if(!controllo){
+    else if(false){
         alert("la password deve rispettare i seguenti requisiti:\n-Lunghezza di almeno 8 caratteri\n-Almeno una lettera maiuscola\n-Almeno un numero");
     }
     else{

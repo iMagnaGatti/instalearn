@@ -19,3 +19,13 @@ function login()
         }
     ));
 }
+function controlla()
+{
+
+    var ris=getCookie("instalearn_id");
+    console.log(ris);
+    if(ris=="")
+    {
+        document.getElementById("form").setAttribute("style","visibility:visible");
+    }
+}
