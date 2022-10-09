@@ -1,22 +1,25 @@
-function signup()
-{
-    window.location.href="./signup.html";
+const mode = "test"; //"live"
+const api_url = mode === "test" ? "http://127.0.0.1:3000/" : "da inserire";
+var id=null;
+async function post_data(url, data) {
+    return await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
 }
-function login()
-{
-    window.location.href="./login.html";
-}
-function insegnante()
-{
-    window.location.href="./teacher.html";
-}
-function test()
-{
-    window.location.href="./test.html";
-}
-function user()
-{
-    window.location.href="./user.html";
+
+async function get_data(url) {
+    return await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
 }
 function getCookie(cname)
 {
@@ -39,4 +42,10 @@ function setCookie(cname, cvalue, exdays) {
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     let expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
+}
+
+function logout(){
+    document.cookie = "instalearn_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    id = null;
+    window.location.href = "index.html";
+}

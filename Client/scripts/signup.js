@@ -1,5 +1,5 @@
 
-function signup()
+async function signup()
 {
     let nome=document.getElementById('nome').value;
     let cognome=document.getElementById('cognome').value;
@@ -27,27 +27,23 @@ function signup()
         alert("la password deve rispettare i seguenti requisiti:\n-Lunghezza di almeno 8 caratteri\n-Almeno una lettera maiuscola\n-Almeno un numero");
     }
     else{
-
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/signup");
-    
-        xhr.setRequestHeader("Accept", "application/json");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        
-        xhr.onload = () =>
-        {
-            if(xhr.status==505){
-                alert("la mail è già registrata");
-            }else{
-                alert("Iscritto correttamente");
-            }
-        }
-        xhr.send(JSON.stringify({
+        const ris=await post_data(api_url+"signup",{
             nome:nome,
             cognome:cognome,
             email:email,
             password:pass
-        }));
-        
+        });
+        if(ris.status==200)
+        {
+            alert("Registrazione andata a buon fine");
+        }
+        else if(ris.status==505)
+        {
+            alert("Email già registrata");
+        }
+        else
+        {
+            alert("Errore "+ris.status);
+        }
     }
 }

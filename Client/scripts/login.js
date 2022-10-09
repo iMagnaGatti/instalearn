@@ -1,23 +1,23 @@
 
-function login()
+async function login()
 {
     let email=document.getElementById('email').value;
     let pass=document.getElementById('password').value;
-    let xhr=new XMLHttpRequest();
-    xhr.open("POST","http://localhost:3000/login");
-    xhr.setRequestHeader("Accept","application/json");
-    xhr.setRequestHeader("Content-Type","application/json");
-    xhr.onload=()=>{
-        console.log(JSON.parse(xhr.response).id);
-        let id=JSON.parse(xhr.response).id;
-        setCookie("instalearn_id",id,0.5);
-    };
-    xhr.send(JSON.stringify(
+    const ris=await post_data(api_url+"login",
         {
             email:email,
             password:pass
         }
-    ));
+    );
+    if(ris.status==200){
+    const ogg=await ris.json();
+    console.log(ogg);
+    let id=ogg.id;
+    setCookie("instalearn_id",id,0.5);
+    }
+    else
+    alert("Error "+ris.status);
+    
 }
 function controlla()
 {

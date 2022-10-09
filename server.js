@@ -62,49 +62,51 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.post('/signup',express.json(),async (req,res)=>{
     console.log(req.body);
-    const nome=req.body.nome;
-    const cognome=req.body.cognome;
-    const email=req.body.email;
+    const nome=sanitizer.escape(req.body.nome);
+    const cognome=sanitizer.escape(req.body.cognome);
+    const email=sanitizer.escape(sareq.body.email);
+    const password=sanitizer.escape(req.body.password);
     //const password=createHashPwd(req.body.password);
     
-    const risulatato=(await db.collection("users").findOne({email:email}))
-    if(risulatato){
+    const risultato=(await db.collection("users").findOne({email:email}))
+    if(risultato){
 
-        res.sendStatus(505);
+        return res.sendStatus(505);
     }else{
-        const password=CryptoJS.AES.encrypt(req.body.password,_secretKey).toString();
-        db.collection('users').insertOne(
+        const criptata=CryptoJS.AES.encrypt(password,_secretKey).toString();
+        await db.collection('users').insertOne(
             {
                 nome:nome,
                 cognome:cognome,
                 email:email,
-                password: password
+                password: criptata
             }
         );
-        res.sendStatus(200);
+        return res.sendStatus(200);
     }
 
 })
 app.post('/login',express.json(),async (req,res)=>{
-    const email=req.body.email;
-    const password=req.body.password;
+    const email=sanitizer.escape(req.body.email);
+    const password=sanitizer.escape(req.body.password);
     const ris=await db.collection('users').findOne({email:email});
     if(ris){
         const decriptata=CryptoJS.AES.decrypt(ris.password,_secretKey).toString(CryptoJS.enc.Utf8);
+        console.log(decriptata);
         if(decriptata==password){
-        res.send({id: ris._id});
+        return res.status(200).send({id: ris._id});
         }
         else
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
     else{
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 });
 app.post('/cercaInsegnante',express.json(),async (req,res)=>{
-    const topic_id=req.body.topic_id;
-    const skill=req.body.skill;
-    const user_id=req.body.user_id;
+    const topic_id=sanitizer.escape(req.body.topic_id);
+    const skill=sanitizer.escape(req.body.skill);
+    const user_id=sanitizer.escape(req.body.user_id);
     const ris=await db.collection('skills').find({topic_id:topic_id,user_id:{$ne:user_id}});
     if(ris)
     {
@@ -123,10 +125,10 @@ app.post('/cercaInsegnante',express.json(),async (req,res)=>{
 
         };
         //console.log(arr);
-        res.send(arr);
+        return res.status(200).send(arr);
     }
     else
-    res.sendStatus(500);
+    return res.sendStatus(500);
 
 });
 
