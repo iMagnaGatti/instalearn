@@ -18,7 +18,7 @@ var corsOptions = {
         callback(new Error('Not allowed by CORS'));
       }
     }
-  }
+  };
 const helmet = require('helmet');
 const sanitizer = require('sanitizer');
 const rateLimit = require("express-rate-limit");
