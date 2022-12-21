@@ -133,6 +133,18 @@ app.post('/cercaInsegnante',express.json(),async (req,res)=>{
 });
 
 
+app.post('/getMateria',express.json(),async (req,res)=>{
+    const idMateria=sanitizer.escape(req.body.id_materia);
+    const materia=await db.collection('topic').findOne({_id:new ObjectId(idMateria)});
+    if(materia){
+        return res.status(200).sedn(materia);
+    }else{
+        return res.sendStatus(500);
+    }
+});
+
+
+
 
 
 
