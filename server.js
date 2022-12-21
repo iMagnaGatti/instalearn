@@ -165,6 +165,8 @@ function shuffle(array) {
 
 //generaTest(id_topic e difficoltà)
 app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficoltà
+    //restituisce un array domande, ogni domanda ha 4 opzione , 3 sbagliate, 1 giusta
+    //ogni opzione ha id_domanda, testo,id_opzione....
     const idMateria=sanitizer.escape(req.body.id_materia);
     const difficoltà=sanitizer.escape(req.body.difficoltà);
     const domande=await db.collection('domande').find({id_materia:idMateria,livelloDomanda:difficoltà});
@@ -188,14 +190,16 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
             var opzioniDomanda=arrOpzioni.slice(0,3); //prende i primi 3 elementi dell'array
             opzioniDomanda.push(arropzioniGiuste[0]); //aggiungo l'opzione giusta
             opzioniDomanda=shuffle(opzioniDomanda); //ordino random
+            var opzioni_fatte=[];
             for await (const opzione of opzioniDomanda){
+                opzioni_fatte.push({_id:opzione._id, id_domanda:opzione.id_domanda, test:opzione.test});
                 await db.collection('test_domanda_opzione').insertOne({
                     id_opzione:opzione._id,
                     id_domanda:domanda._id,
                     id_test:id_test
                 });
             }
-            test.push({id_domanda:domanda._id, opzioni:opzioniDomanda});
+            test.push({id_domanda:domanda._id, opzioni:opzioni_fatte});
         };
 
         return res.status(200).send({id_test:id_test,test:test});
@@ -206,7 +210,19 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
 });
 
 //modificaDatiUtente(id_utente, datiUtente)
-//inviaRipostaTest(risposte, domande, id_test): ritorna il punteggio, se punteggio è >=6
+app.post('/modificaDatiUtente',express.json(),async (req,res)=>{
+    
+});
+
+//inviaRipostaTest(risposte, domande, id_test): calcola il punteggio, se punteggio è >=6 aggiorna skill
+app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
+    
+});
+
+
+
+
+
 
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(reeq.body.id_utente);
