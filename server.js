@@ -173,7 +173,8 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
         const id_test=(await db.collection('test').insertOne({id_topic:idMateria,rank:difficoltà})).insertedId;
         
         var test=[];
-        const arr=domande.toArray();
+        var arr=domande.toArray();
+        arr=arr.splice(0,10);
         arr=shuffle(arr);
         for await (const domanda of arr)
         {
@@ -205,8 +206,7 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
 });
 
 //modificaDatiUtente(id_utente, datiUtente)
-//getTestDisponibiliPerUtente(id_utente)
-//inviaRipostaTest(risposte, domande, id_test)
+//inviaRipostaTest(risposte, domande, id_test): ritorna il punteggio, se punteggio è >=6
 
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(reeq.body.id_utente);
