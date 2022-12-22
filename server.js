@@ -188,6 +188,8 @@ function shuffle(array) {
 
 //generaTest(id_topic e difficoltà)
 app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficoltà
+    //restituisce un array domande, ogni domanda ha 4 opzione , 3 sbagliate, 1 giusta
+    //ogni opzione ha id_domanda, testo,id_opzione....
     const idMateria=sanitizer.escape(req.body.id_materia);
     const difficoltà=sanitizer.escape(req.body.difficoltà);
     const domande=await db.collection('domande').find({id_materia:idMateria,livelloDomanda:difficoltà});
@@ -196,7 +198,8 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
         const id_test=(await db.collection('test').insertOne({id_topic:idMateria,rank:difficoltà})).insertedId;
         
         var test=[];
-        const arr=domande.toArray();
+        var arr=domande.toArray();
+        arr=arr.splice(0,10);
         arr=shuffle(arr);
         for await (const domanda of arr)
         {
@@ -204,20 +207,22 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
             var opzioneGiusta=await db.collection('opzione').find({id_domanda:domanda._id.valueOf(), giusta:true});
             var arropzioniGiuste=opzioneGiusta.toArray();
             arropzioniGiuste=shuffle(arropzioniGiuste);
-            var opzioniSbagliate=await db.collection('opzione').find({id_domanda:domanda.valueOf(), giusta:false});
+            var opzioniSbagliate=await db.collection('opzione').find({id_domanda:domanda._id.valueOf(), giusta:false});
             var arrOpzioni=opzioniSbagliate.toArray();
             arrOpzioni=shuffle(arrOpzioni);
             var opzioniDomanda=arrOpzioni.slice(0,3); //prende i primi 3 elementi dell'array
             opzioniDomanda.push(arropzioniGiuste[0]); //aggiungo l'opzione giusta
             opzioniDomanda=shuffle(opzioniDomanda); //ordino random
+            var opzioni_fatte=[];
             for await (const opzione of opzioniDomanda){
+                opzioni_fatte.push({_id:opzione._id.valueOf(), id_domanda:opzione.id_domanda, test:opzione.test});
                 await db.collection('test_domanda_opzione').insertOne({
                     id_opzione:opzione._id.valueOf(),
                     id_domanda:domanda._id.valueOf(),
                     id_test:id_test
                 });
             }
-            test.push({id_domanda:domanda._id.valueOf(), opzioni:opzioniDomanda});
+            test.push({id_domanda:domanda._id.valueOf(), opzioni:opzioni_fatte});
         };
 
         return res.status(200).send({id_test:id_test,test:test});
@@ -229,8 +234,14 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
 
 
 //modificaDatiUtente(id_utente, datiUtente)
-//getTestDisponibiliPerUtente(id_utente)
-//inviaRipostaTest(risposte, domande, id_test)
+app.post('/modificaDatiUtente',express.json(),async (req,res)=>{
+    
+});
+
+//inviaRipostaTest(risposte, domande, id_test): calcola il punteggio, se punteggio è >=6 aggiorna skill
+app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
+    
+});
 
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(reeq.body.id_utente);
