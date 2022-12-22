@@ -1,7 +1,6 @@
-if(process.env.NODE_ENV !=='production')
-{
-    require('dotenv').config();
-}
+
+console.log("lol bro");
+require('dotenv').config();
 
 const express= require('express');
 const app=express();
@@ -36,7 +35,7 @@ const port = process.env.PORT || 3000;
 var ObjectId=mongoose.Types.ObjectId;
 const _secretKey = process.env.SECRET_KEY; //key for create hash key 
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
-mongoose.connect(process.env.DATABASE_URL,{useNewUrlParser: true});
+mongoose.connect(""+process.env.DATABASE_URL+"",{useNewUrlParser: true});
 const db=mongoose.connection;
 
 
@@ -68,13 +67,36 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 })); 
 
+function encryptWithCryptoJS(plainText) {
+    const key = CryptoJS.enc.Base64.parse(_secretKey);
+    const iv1 = CryptoJS.enc.Base64.parse("hf8685nfhfhjs9h8");
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+        keySize: 16,
+        iv: iv1,
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
 
+    return encrypted + "";
+}
+function decryptionWithCryptoJS(cipher) {
+    const key = CryptoJS.enc.Base64.parse(_secretKey);
+    const iv1 = CryptoJS.enc.Base64.parse("hf8685nfhfhjs9h8");
+    const plainText = CryptoJS.AES.decrypt(cipher, key, {
+        keySize: 16,
+        iv: iv1,
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+
+    return plainText.toString(CryptoJS.enc.Utf8);
+}
 
 app.post('/signup',express.json(),async (req,res)=>{
     console.log(req.body);
     const nome=sanitizer.escape(req.body.nome);
     const cognome=sanitizer.escape(req.body.cognome);
-    const email=sanitizer.escape(sareq.body.email);
+    const email=sanitizer.escape(req.body.email);
     const password=sanitizer.escape(req.body.password);
     //const password=createHashPwd(req.body.password);
     
@@ -83,7 +105,7 @@ app.post('/signup',express.json(),async (req,res)=>{
 
         return res.sendStatus(505);
     }else{
-        const criptata=CryptoJS.AES.encrypt(password,_secretKey).toString();
+        const criptata=encryptWithCryptoJS(password);
         await db.collection('users').insertOne(
             {
                 nome:nome,
@@ -102,10 +124,11 @@ app.post('/login',express.json(),async (req,res)=>{
     const password=sanitizer.escape(req.body.password);
     const ris=await db.collection('users').findOne({email:email});
     if(ris){
-        const decriptata=CryptoJS.AES.decrypt(ris.password,_secretKey).toString(CryptoJS.enc.Utf8);
+        console.log(ris.password);
+        var decriptata=decryptionWithCryptoJS(ris.password);
         console.log(decriptata);
         if(decriptata==password){
-        return res.status(200).send({id: ris._id});
+        return res.status(200).send({id: ris._id.valueOf()});
         }
         else
         return res.sendStatus(500);
@@ -165,8 +188,6 @@ function shuffle(array) {
 
 //generaTest(id_topic e difficoltà)
 app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficoltà
-    //restituisce un array domande, ogni domanda ha 4 opzione , 3 sbagliate, 1 giusta
-    //ogni opzione ha id_domanda, testo,id_opzione....
     const idMateria=sanitizer.escape(req.body.id_materia);
     const difficoltà=sanitizer.escape(req.body.difficoltà);
     const domande=await db.collection('domande').find({id_materia:idMateria,livelloDomanda:difficoltà});
@@ -175,31 +196,28 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
         const id_test=(await db.collection('test').insertOne({id_topic:idMateria,rank:difficoltà})).insertedId;
         
         var test=[];
-        var arr=domande.toArray();
-        arr=arr.splice(0,10);
+        const arr=domande.toArray();
         arr=shuffle(arr);
         for await (const domanda of arr)
         {
             
-            var opzioneGiusta=await db.collection('opzione').find({id_domanda:domanda._id, giusta:true});
+            var opzioneGiusta=await db.collection('opzione').find({id_domanda:domanda._id.valueOf(), giusta:true});
             var arropzioniGiuste=opzioneGiusta.toArray();
             arropzioniGiuste=shuffle(arropzioniGiuste);
-            var opzioniSbagliate=await db.collection('opzione').find({id_domanda:domanda._id, giusta:false});
+            var opzioniSbagliate=await db.collection('opzione').find({id_domanda:domanda.valueOf(), giusta:false});
             var arrOpzioni=opzioniSbagliate.toArray();
             arrOpzioni=shuffle(arrOpzioni);
             var opzioniDomanda=arrOpzioni.slice(0,3); //prende i primi 3 elementi dell'array
             opzioniDomanda.push(arropzioniGiuste[0]); //aggiungo l'opzione giusta
             opzioniDomanda=shuffle(opzioniDomanda); //ordino random
-            var opzioni_fatte=[];
             for await (const opzione of opzioniDomanda){
-                opzioni_fatte.push({_id:opzione._id, id_domanda:opzione.id_domanda, test:opzione.test});
                 await db.collection('test_domanda_opzione').insertOne({
-                    id_opzione:opzione._id,
-                    id_domanda:domanda._id,
+                    id_opzione:opzione._id.valueOf(),
+                    id_domanda:domanda._id.valueOf(),
                     id_test:id_test
                 });
             }
-            test.push({id_domanda:domanda._id, opzioni:opzioni_fatte});
+            test.push({id_domanda:domanda._id.valueOf(), opzioni:opzioniDomanda});
         };
 
         return res.status(200).send({id_test:id_test,test:test});
@@ -209,20 +227,10 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
 
 });
 
+
 //modificaDatiUtente(id_utente, datiUtente)
-app.post('/modificaDatiUtente',express.json(),async (req,res)=>{
-    
-});
-
-//inviaRipostaTest(risposte, domande, id_test): calcola il punteggio, se punteggio è >=6 aggiorna skill
-app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
-    
-});
-
-
-
-
-
+//getTestDisponibiliPerUtente(id_utente)
+//inviaRipostaTest(risposte, domande, id_test)
 
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(reeq.body.id_utente);
@@ -241,6 +249,7 @@ app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     }
     return res.sendStatus(500);
 });
+
 //getMateria(id_materia)
 app.post('/getMateria',express.json(),async (req,res)=>{
     const idMateria=sanitizer.escape(req.body.id_materia);
@@ -258,13 +267,14 @@ app.post('/getDatiUtente',express.json(),async (req,res)=>{
     const risposta=await db.collection('users').findOne({username: username_utente});
     if(risposta)
     {
-        const skills=await db.collection('skills').find({user_id:risposta.user_id});
-        const arr=await skills.toArray();
-        for await(const doc of arr)
+        console.log(risposta._id.valueOf());
+        const skills=await db.collection('skills').find({user_id:risposta._id.valueOf()});
+        var arr=await skills.toArray();
+        for await(var doc of arr)
         {
             doc.materia=await db.collection('topic').findOne({_id:new ObjectId(doc.topic_id)});
         }
-        return res.status(200).send({username:risposta.username, nome:risposta.nome,cognome:risposta.cognome,descriozione:risposta.descriozione,skills:arr});
+        return res.status(200).send({username:risposta.username, nome:risposta.nome,cognome:risposta.cognome,descrizione:risposta.descrizione,skills:arr});
     }
     else
     return res.status(500);
@@ -276,7 +286,7 @@ app.post('/getDatiSeStesso',express.json(),async (req,res)=>{
     const dati_utente=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     
     if(dati_utente){
-        const skill=await db.collection('skills').find({user_id:dati_utente._id});
+        const skill=await db.collection('skills').find({user_id:dati_utente._id.valueOf()});
         const arr=skills.toArray();
         for await(const tempSkill of arr){
             tempSkill.materia=await db.collection('topic').findOne({_id:new ObjectId(tempSkill.topic_id)});
@@ -340,18 +350,6 @@ app.post('/rispondiMessaggioAiuto',express.json(),async (req,res)=>{
 });
 
 //endpoints per la chat
-
-app.post('/getMateria',express.json(),async (req,res)=>{
-    const idMateria=sanitizer.escape(req.body.id_materia);
-    const materia=await db.collection('topic').findOne({_id:new ObjectId(idMateria)});
-    if(materia){
-        return res.status(200).sedn(materia);
-    }else{
-        return res.sendStatus(500);
-    }
-});
-
-
 
 
 
