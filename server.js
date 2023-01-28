@@ -305,16 +305,19 @@ app.post('/getDatiUtente',express.json(),async (req,res)=>{
 
 //getDatiSeStesso(id_utente)
 app.post('/getDatiSeStesso',express.json(),async (req,res)=>{
-    const id_utente=sanitizer.escape(req.body.Id_user);
+    const id_utente=sanitizer.escape(req.body.Id);
     const dati_utente=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     
     if(dati_utente){
-        const skill=await db.collection('skills').find({user_id:dati_utente._id.valueOf()});
-        const arr=skills.toArray();
-        for await(const tempSkill of arr){
-            tempSkill.materia=await db.collection('topic').findOne({_id:new ObjectId(tempSkill.Id_topic)});
+        var skill=await db.collection('skills').find({id_user:dati_utente._id.valueOf()});
+        var arr=await skill.toArray();
+        var att=[];
+        for await(var tempSkill of arr){
+            tempSkill.materia=await db.collection('topic').findOne({_id:new ObjectId(tempSkill.id_topic)});
+            if(tempSkill.materia)
+            att.push({Id_topic:tempSkill.id_topic,Materia:tempSkill.materia.topic,Skill:tempSkill.rank});
         }
-        return res.status(200).send({username:dati_utente.username, email:dati_utente.email, nome:dati_utente.nome, cognome:dati_utente.cognome, descrizione:dati_utente.descrizione,skills:arr});
+        return res.status(200).send({Username:dati_utente.username, Email:dati_utente.email, Nome:dati_utente.nome, Cognome:dati_utente.cognome, Descrizione:dati_utente.descrizione,Skills:att});
     }else{
         return res.sendStatus(400);
     }

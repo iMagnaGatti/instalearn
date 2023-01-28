@@ -241,6 +241,37 @@
                         "description": "OK, restituisce le informazioni sull'utente",
                         "schema":
                         {
+                            "$ref":"#/definitions/UserPublic"
+                        }
+                    },
+                    "400":{
+                        "description": "Non esiste un utente componibile con tali informazioni"
+                    }
+                }
+            }
+        },
+        "/getDatiSeStesso":
+        {
+            "post": {
+                "tags": [
+                    "Utenti"
+                ],
+                "summary": "Permette di sapere le proprie informazioni, per farlo è necessario il token (id utente)",
+                "parameters":[{
+                    "in": "body",
+                    "name": "IdUtente",
+                    "description": "Id dell'utente che vuole sapere le proprie informazioni",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/IdUtente"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce le informazioni private sull'utente",
+                        "schema":
+                        {
                             "$ref":"#/definitions/UserPrivate"
                         }
                     },
@@ -277,7 +308,7 @@
                 "Username":{"type":"string"}
             }
         },
-        "UserPrivate": {
+        "UserPublic": {
             "required": [
                 "Nome",
                 "Cognome",
@@ -292,6 +323,31 @@
                 "Cognome": {
                     "type": "string"
                 },
+                "Descrizione":{"type":"string"},
+                "Username":{"type":"string"},
+                "Skills":{
+                    "$ref":"#/definitions/ArrayDiTopicSkill"
+                }
+            }
+        },
+        "UserPrivate": {
+            "required": [
+                "Nome",
+                "Cognome",
+                "Username",
+                "Descrizione",
+                "Email",
+                "Skills"
+            ],
+            "properties": {
+                "Nome": {
+                    "type": "string"
+                },
+                "Cognome": {
+                    "type": "string"
+                },
+                "Email":{"type":"string"},
+                "Descrizione":{"type":"string"},
                 "Username":{"type":"string"},
                 "Skills":{
                     "$ref":"#/definitions/ArrayDiTopicSkill"
