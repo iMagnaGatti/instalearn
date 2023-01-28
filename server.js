@@ -130,13 +130,13 @@ app.post('/login',express.json(),async (req,res)=>{
         var decriptata=decryptionWithCryptoJS(ris.password);
         console.log(decriptata);
         if(decriptata==password){
-        return res.status(200).send({id: ris._id.valueOf()});
+        return res.status(200).send({Id: ris._id.valueOf()});
         }
         else
-        return res.sendStatus(500);
+        return res.sendStatus(400);
     }
     else{
-        return res.sendStatus(500);
+        return res.sendStatus(400);
     }
 });
 
@@ -144,7 +144,7 @@ app.post('/cercaInsegnante',express.json(),async (req,res)=>{
     const topic_id=sanitizer.escape(req.body.Topic_id);
     const skill=sanitizer.escape(req.body.Skill);
     const user_id=sanitizer.escape(req.body.User_id);
-    const ris=await db.collection('skills').find({topic_id:topic_id,user_id:{$ne:user_id}});
+    const ris=await db.collection('skills').find({topic_id:topic_id,user_id:{$ne:user_id},rank:{$gt:skill}});
     if(ris)
     {
         var arr=[];
@@ -156,7 +156,7 @@ app.post('/cercaInsegnante',express.json(),async (req,res)=>{
             
             if(tot)
             {
-                await arr.push({username:tot.username,rank:doc.rank});
+                await arr.push({Username:tot.username,Skill:doc.rank});
                 //console.log(arr);
             }
 
@@ -174,7 +174,7 @@ function shuffle(array) {
     let currentIndex = array.length,  randomIndex;
   
     // While there remain elements to shuffle.
-    while (currentIndex != 0) {
+    while (currentIndex > 0) {
   
       // Pick a remaining element.
       randomIndex = Math.floor(Math.random() * currentIndex);
@@ -192,44 +192,49 @@ function shuffle(array) {
 app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficoltà
     //restituisce un array domande, ogni domanda ha 4 opzione , 3 sbagliate, 1 giusta
     //ogni opzione ha id_domanda, testo,id_opzione....
-    const idMateria=sanitizer.escape(req.body.Id_materia);
-    const difficoltà=sanitizer.escape(req.body.Difficoltà);
+    const idMateria=sanitizer.escape(req.body.Topic_id);
+    const difficoltà=parseInt(sanitizer.escape(req.body.Skill));
     const domande=await db.collection('domande').find({id_materia:idMateria,livelloDomanda:difficoltà});
     if(domande){
         //inserire un nuovo test e prendere l'_id
         const id_test=(await db.collection('test').insertOne({id_topic:idMateria,rank:difficoltà})).insertedId;
         
         var test=[];
-        var arr=domande.toArray();
-        arr=arr.splice(0,10);
+        var arr=await domande.toArray();
         arr=shuffle(arr);
-        for await (const domanda of arr)
+        arr=arr.slice(0,10);
+        for await (var domanda of arr)
         {
             
             var opzioneGiusta=await db.collection('opzione').find({id_domanda:domanda._id.valueOf(), giusta:true});
+            console.log(opzioneGiusta);
             var arropzioniGiuste=opzioneGiusta.toArray();
-            arropzioniGiuste=shuffle(arropzioniGiuste);
+            arropzioniGiuste=await shuffle(arropzioniGiuste);
             var opzioniSbagliate=await db.collection('opzione').find({id_domanda:domanda._id.valueOf(), giusta:false});
-            var arrOpzioni=opzioniSbagliate.toArray();
+            var arrOpzioni=await opzioniSbagliate.toArray();
             arrOpzioni=shuffle(arrOpzioni);
+            console.log(domanda);
             var opzioniDomanda=arrOpzioni.slice(0,3); //prende i primi 3 elementi dell'array
-            opzioniDomanda.push(arropzioniGiuste[0]); //aggiungo l'opzione giusta
-            opzioniDomanda=shuffle(opzioniDomanda); //ordino random
+            await opzioniDomanda.push(await arropzioniGiuste[0]); //aggiungo l'opzione giusta
+            opzioniDomanda=await shuffle(opzioniDomanda); //ordino random
             var opzioni_fatte=[];
-            for await (const opzione of opzioniDomanda){
-                opzioni_fatte.push({_id:opzione._id.valueOf(), id_domanda:opzione.id_domanda, test:opzione.test});
-                await db.collection('test_domanda_opzione').insertOne({
-                    id_opzione:opzione._id.valueOf(),
-                    id_domanda:domanda._id.valueOf(),
-                    id_test:id_test
-                });
+            console.log(domanda);
+            for await (var opzione of opzioniDomanda){
+                    if(opzione){
+                    opzioni_fatte.push({Id:opzione._id.valueOf(), Testo:opzione.testo});
+                    await db.collection('test_domanda_opzione').insertOne({
+                        id_opzione:opzione._id.valueOf(),
+                        id_domanda:domanda._id.valueOf(),
+                        id_test:id_test.valueOf()
+                    });
+                }
             }
-            test.push({id_domanda:domanda._id.valueOf(), opzioni:opzioni_fatte});
+            test.push({Domanda:{"Id_domanda":domanda._id.valueOf(),"Testo":domanda.testo}, Opzioni:opzioni_fatte});
         };
 
-        return res.status(200).send({id_test:id_test,test:test});
+        return res.status(200).send({Id_test:id_test,Domande:test});
     }else{
-        res.sendStatus(500);
+        res.sendStatus(400);
     }
 
 });
@@ -260,7 +265,7 @@ app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
         }
         return res.status(200).send({tests:tests});
     }
-    return res.sendStatus(500);
+    return res.sendStatus(400);
 });
 
 //getMateria(id_materia)
@@ -270,7 +275,7 @@ app.post('/getMateria',express.json(),async (req,res)=>{
     if(materia){
         return res.status(200).send({materia: materia});
     }else{
-        return res.sendStatus(500);
+        return res.sendStatus(400);
     }
 });
 
@@ -290,7 +295,7 @@ app.post('/getDatiUtente',express.json(),async (req,res)=>{
         return res.status(200).send({username:risposta.username, nome:risposta.nome,cognome:risposta.cognome,descrizione:risposta.descrizione,skills:arr});
     }
     else
-    return res.status(500);
+    return res.status(400);
 });
 
 //getDatiSeStesso(id_utente)
@@ -306,7 +311,7 @@ app.post('/getDatiSeStesso',express.json(),async (req,res)=>{
         }
         return res.status(200).send({username:dati_utente.username, email:dati_utente.email, nome:dati_utente.nome, cognome:dati_utente.cognome, descrizione:dati_utente.descrizione,skills:arr});
     }else{
-        return res.sendStatus(500);
+        return res.sendStatus(400);
     }
     
 });
@@ -321,7 +326,7 @@ app.post('/getMessaggiAiuto',express.json(),async (req,res)=>{
         const arr=msgs.toArray();
         return res.status(200).send({messaggi:arr});
     }
-    return res.sendStatus(500);
+    return res.sendStatus(400);
 });
 
 //rispondiMessaggioAiuto(id_messaggio,id_admin,risposta)
@@ -356,10 +361,10 @@ app.post('/rispondiMessaggioAiuto',express.json(),async (req,res)=>{
 
             return res.sendStatus(200);
         }
-        return res.sendStatus(500);
+        return res.sendStatus(400);
 
     }
-    return res.sendStatus(500);
+    return res.sendStatus(400);
 });
 
 //endpoints per la chat

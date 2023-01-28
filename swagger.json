@@ -15,6 +15,14 @@
       {
         "name": "Autenticazione",
         "description": "API per l'iscrizione e autenticazione al sito"
+      },
+      {
+        "name":"Insegnanti",
+        "description":"API per la gestione degli insegnanti"
+      },
+      {
+        "name":"Test",
+        "description":"API per la gestione dei test"
       }
     ],
     "paths": {
@@ -43,6 +51,108 @@
                     }
                 }
             }
+        },
+        "/login":
+        {
+            "post": {
+                "tags": [
+                    "Autenticazione"
+                ],
+                "summary": "Permette di registrarsi al sito",
+                "parameters":[{
+                    "in": "body",
+                    "name": "CredenzialiUtente",
+                    "description": "Credenziali dell'utente che effettua il login",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/UserCredentials"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce l'id dell'utente per creare la sessione",
+                        "content":
+                        {
+                            "application/json":
+                            {
+                                "schema":{"$ref":"#/definitions/IdUtente"}
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "L'utente non è presente nel sistema"
+                    }
+                }
+            }
+        },
+        "/cercaInsegnante":
+        {
+            "post": {
+                "tags": [
+                    "Insegnanti"
+                ],
+                "summary": "Permette di ricercare un insegnante in base ad un topic e a ad un livello di abilità",
+                "parameters":[{
+                    "in": "body",
+                    "name": "TopicSkillUtente",
+                    "description": "Un Json composto da un id topic, un livello di skill e un id utente",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/TopicSkillUtente"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce un Array di Insegnanti disponibili",
+                        "content":
+                        {
+                            "application/json":
+                            {
+                                "$ref":"#/definitions/ArrayDiInsegnanti"
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "L'utente non è presente nel sistema"
+                    }
+                }
+            }
+        },
+        "/generaTest":
+        {
+            "post": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Permette di creare un test",
+                "parameters":[{
+                    "in": "body",
+                    "name": "TopicSkillUtente",
+                    "description": "Un Json composto da un id topic, un livello di skill e un id utente (non obbligatorio)",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/TopicSkillUtente"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce un Array di Domande",
+                        "content":
+                        {
+                            "application/json":
+                            {
+                                "$ref":"#/definitions/ArrayDiDomande"
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "L'utente non è presente nel sistema"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -51,7 +161,8 @@
                 "Email",
                 "Password",
                 "Nome",
-                "Cognome"
+                "Cognome",
+                "Username"
             ],
             "properties": {
                 "Email": {
@@ -66,7 +177,100 @@
                 },
                 "Cognome": {
                     "type": "string"
+                },
+                "Username":{"type":"string"}
+            }
+        },
+        "UserCredentials": {
+            "required": [
+                "Email",
+                "Password"
+            ],
+            "properties": {
+                "Email": {
+                    "type": "string"
+                },
+                "Password":
+                {
+                    "type":"string"
                 }
+            }
+        },
+        "IdUtente":
+        {
+            "required":["Id"],
+            "properties":{
+                "Id":{"type":"string"}
+            }
+        },
+        "TopicSkillUtente":
+        {
+            "required":["Topic_id","Skill"],
+            "properties":{
+                "Topic_id":{"type":"string"},
+                "Skill":{"type":"integer"},
+                "Id":{"type":"string"}
+            }
+        },
+        "Insegnante":
+        {
+            "required":["Skill","Username"],
+            "properties":{
+                "Skill":{"type":"integer"},
+                "Username":{"type":"string"}
+            }
+        },
+        "ArrayDiInsegnanti":
+        {
+            "type":"array",
+            "items":
+            {
+                "$ref":"#/definitions/Insegnante"
+            }
+        },
+        "Opzione":
+        {
+            "required":["Testo","Id_opzione"],
+            "properties":
+            {
+                "Id_opzione":{"type":"string"},
+                "Testo":{"type":"string"}
+            }
+        },
+        "ArrayDiOpzioni":
+        {
+            "type":"array",
+            "items":
+            {
+                "$ref":"#/definitions/Opzione"
+            }
+        },
+        "Domanda":
+        {
+            "required":["Id_domanda","Testo","Opzioni"],
+            "properties":
+            {
+                "Id_domanda":{"type":"string"},
+                "Testo":{"type":"string"},
+                "Opzioni":{"$ref":"#/definitions/ArrayDiOpzioni"}
+            }
+        },
+        "ArrayDiDomande":
+        {
+            "type":"array",
+            
+            "items":
+            {
+                "$ref":"#/definitions/Domanda"
+            }
+        },
+        "Test":
+        {
+            "required":["Id_test","Domande"],
+            "properties":
+            {
+                "Id_test":{"type":"string"},
+                "Domande":{"$ref":"#/definitions/ArrayDiDomande"}
             }
         }
     },
