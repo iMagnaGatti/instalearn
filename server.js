@@ -141,10 +141,10 @@ app.post('/login',express.json(),async (req,res)=>{
 });
 
 app.post('/cercaInsegnante',express.json(),async (req,res)=>{
-    const topic_id=sanitizer.escape(req.body.Topic_id);
+    const topic_id=sanitizer.escape(req.body.Id_topic);
     const skill=sanitizer.escape(req.body.Skill);
     const user_id=sanitizer.escape(req.body.User_id);
-    const ris=await db.collection('skills').find({topic_id:topic_id,user_id:{$ne:user_id},rank:{$gt:skill}});
+    const ris=await db.collection('skills').find({Id_topic:topic_id,user_id:{$ne:user_id},rank:{$gt:skill}});
     if(ris)
     {
         var arr=[];
@@ -192,7 +192,7 @@ function shuffle(array) {
 app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficoltà
     //restituisce un array domande, ogni domanda ha 4 opzione , 3 sbagliate, 1 giusta
     //ogni opzione ha id_domanda, testo,id_opzione....
-    const idMateria=sanitizer.escape(req.body.Topic_id);
+    const idMateria=sanitizer.escape(req.body.Id_topic);
     const difficoltà=parseInt(sanitizer.escape(req.body.Skill));
     const domande=await db.collection('domande').find({id_materia:idMateria,livelloDomanda:difficoltà});
     if(domande){
@@ -277,23 +277,27 @@ app.post('/getMateria',express.json(),async (req,res)=>{
         return res.status(200).send({Materia: materia});
     }else{
         return res.sendStatus(400);
+
     }
 });
 
 //getDatiUtente(username_utente)
 app.post('/getDatiUtente',express.json(),async (req,res)=>{
-    const username_utente=sanitizer.escape(req.body.Username_utente);
+    const username_utente=sanitizer.escape(req.body.Username);
     const risposta=await db.collection('users').findOne({username: username_utente});
     if(risposta)
     {
         console.log(risposta._id.valueOf());
-        const skills=await db.collection('skills').find({user_id:risposta._id.valueOf()});
-        var arr=await skills.toArray();
-        for await(var doc of arr)
+        var skills=await db.collection('skills').find({id_user:risposta._id.valueOf()});
+        skills=await skills.toArray();
+        var att=[];
+        for await(var doc of skills)
         {
-            doc.materia=await db.collection('topic').findOne({_id:new ObjectId(doc.topic_id)});
+            doc.materia=await db.collection('topic').findOne({_id:new ObjectId(doc.id_topic)});
+            if(doc.materia)
+            att.push({Id_topic:doc.id_topic,Materia:doc.materia.topic,Skill:doc.rank});
         }
-        return res.status(200).send({username:risposta.username, nome:risposta.nome,cognome:risposta.cognome,descrizione:risposta.descrizione,skills:arr});
+        return res.status(200).send({Username:risposta.username, Nome:risposta.nome,Cognome:risposta.cognome,Descrizione:risposta.descrizione,Skills:att});
     }
     else
     return res.status(400);
@@ -308,7 +312,7 @@ app.post('/getDatiSeStesso',express.json(),async (req,res)=>{
         const skill=await db.collection('skills').find({user_id:dati_utente._id.valueOf()});
         const arr=skills.toArray();
         for await(const tempSkill of arr){
-            tempSkill.materia=await db.collection('topic').findOne({_id:new ObjectId(tempSkill.topic_id)});
+            tempSkill.materia=await db.collection('topic').findOne({_id:new ObjectId(tempSkill.Id_topic)});
         }
         return res.status(200).send({username:dati_utente.username, email:dati_utente.email, nome:dati_utente.nome, cognome:dati_utente.cognome, descrizione:dati_utente.descrizione,skills:arr});
     }else{

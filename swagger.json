@@ -27,6 +27,10 @@
       {
         "name":"Materie",
         "description":"API per la gestione delle materie"
+      },
+      {
+        "name":"Utenti",
+        "description":"API per la gestione degli utenti"
       }
     ],
     "paths": {
@@ -76,13 +80,11 @@
                 "responses": {
                     "200": {
                         "description": "OK, restituisce l'id dell'utente per creare la sessione",
-                        "content":
+                        "schema":
                         {
-                            "application/json":
-                            {
-                                "schema":{"$ref":"#/definitions/IdUtente"}
-                            }
+                            "schema":{"$ref":"#/definitions/IdUtente"}
                         }
+                        
                     },
                     "400":{
                         "description": "L'utente non è presente nel sistema"
@@ -110,13 +112,11 @@
                 "responses": {
                     "200": {
                         "description": "OK, restituisce un Array di Insegnanti disponibili",
-                        "content":
+                        "schema":
                         {
-                            "application/json":
-                            {
-                                "$ref":"#/definitions/ArrayDiInsegnanti"
-                            }
+                            "$ref":"#/definitions/ArrayDiInsegnanti"
                         }
+                        
                     },
                     "400":{
                         "description": "L'utente non è presente nel sistema"
@@ -144,13 +144,12 @@
                 "responses": {
                     "200": {
                         "description": "OK, restituisce un Array di Domande",
-                        "content":
+
+                        "schema":
                         {
-                            "application/json":
-                            {
-                                "$ref":"#/definitions/ArrayDiDomande"
-                            }
+                            "$ref":"#/definitions/ArrayDiDomande"
                         }
+                        
                     },
                     "400":{
                         "description": "Non esiste un test componibile con tali informazioni"
@@ -178,12 +177,9 @@
                 "responses": {
                     "200": {
                         "description": "OK, restituisce un Array contente le informazioni base dei Test consigliati",
-                        "content":
+                        "schema":
                         {
-                            "application/json":
-                            {
-                                "$ref":"#/definitions/ArrayDiBaseTest"
-                            }
+                            "$ref":"#/definitions/ArrayDiBaseTest"
                         }
                     },
                     "400":{
@@ -212,16 +208,44 @@
                 "responses": {
                     "200": {
                         "description": "OK, restituisce le informazioni sulla materia",
-                        "content":
+                        "schema":
                         {
-                            "application/json":
-                            {
-                                "$ref":"#/definitions/Materia"
-                            }
+                            "$ref":"#/definitions/Materia"
                         }
                     },
                     "400":{
                         "description": "Non esiste una materia componibile con tali informazioni"
+                    }
+                }
+            }
+        },
+        "/getDatiUtente":
+        {
+            "post": {
+                "tags": [
+                    "Utenti"
+                ],
+                "summary": "Permette di sapere le informazioni di un utente tramite il suo username",
+                "parameters":[{
+                    "in": "body",
+                    "name": "Username",
+                    "description": "Username dell'utente di cui si vogliono sapere le informazioni",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/Username"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce le informazioni sull'utente",
+                        "schema":
+                        {
+                            "$ref":"#/definitions/UserPrivate"
+                        }
+                    },
+                    "400":{
+                        "description": "Non esiste un utente componibile con tali informazioni"
                     }
                 }
             }
@@ -253,6 +277,32 @@
                 "Username":{"type":"string"}
             }
         },
+        "UserPrivate": {
+            "required": [
+                "Nome",
+                "Cognome",
+                "Username",
+                "Descrizione",
+                "Skills"
+            ],
+            "properties": {
+                "Nome": {
+                    "type": "string"
+                },
+                "Cognome": {
+                    "type": "string"
+                },
+                "Username":{"type":"string"},
+                "Skills":{
+                    "$ref":"#/definitions/ArrayDiTopicSkill"
+                }
+            }
+        },
+        "Username":
+        {
+            "required":["Username"],
+            "properties":{"Username":{"type":"string"}}
+        },
         "UserCredentials": {
             "required": [
                 "Email",
@@ -277,11 +327,12 @@
         },
         "TopicSkillUtente":
         {
-            "required":["Topic_id","Skill"],
+            "required":["Id_topic","Skill"],
             "properties":{
-                "Topic_id":{"type":"string"},
+                "Id_topic":{"type":"string"},
                 "Skill":{"type":"integer"},
-                "Id":{"type":"string"}
+                "Id":{"type":"string"},
+                "Materia":{"type":"string"}
             }
         },
         "Insegnante":
@@ -373,7 +424,16 @@
         {
             "required":["IdMateria","Nome"],
             "properties":{"IdMateria":{"type":"string"},"Nome":{"type":"string"}}
+        },
+        "ArrayDiTopicSkill":
+        {
+            "type":"array",
+            "items":
+            {
+                "$ref":"#/definitions/TopicSkillUtente"
+            }
         }
+        
 
     },
     "schemes": ["http"],
