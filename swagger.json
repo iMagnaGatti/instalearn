@@ -23,6 +23,10 @@
       {
         "name":"Test",
         "description":"API per la gestione dei test"
+      },
+      {
+        "name":"Materie",
+        "description":"API per la gestione delle materie"
       }
     ],
     "paths": {
@@ -149,7 +153,75 @@
                         }
                     },
                     "400":{
-                        "description": "L'utente non è presente nel sistema"
+                        "description": "Non esiste un test componibile con tali informazioni"
+                    }
+                }
+            }
+        },
+        "/getTestDisponibiliPerUtente":
+        {
+            "post": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Permette di vedere che test sono diponibili",
+                "parameters":[{
+                    "in": "body",
+                    "name": "IdUtente",
+                    "description": "Id dell'utente il quale vuole sapere i quiz per lui disponibili",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/IdUtente"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce un Array contente le informazioni base dei Test consigliati",
+                        "content":
+                        {
+                            "application/json":
+                            {
+                                "$ref":"#/definitions/ArrayDiBaseTest"
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "Non esiste un test componibile con tali informazioni"
+                    }
+                }
+            }
+        },
+        "/getMateria":
+        {
+            "post": {
+                "tags": [
+                    "Materie"
+                ],
+                "summary": "Permette di sapere le informazioni su una materia a partire dall'id",
+                "parameters":[{
+                    "in": "body",
+                    "name": "IdMateria",
+                    "description": "Id della materia che si vuole cercare",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/IdMateria"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce le informazioni sulla materia",
+                        "content":
+                        {
+                            "application/json":
+                            {
+                                "$ref":"#/definitions/Materia"
+                            }
+                        }
+                    },
+                    "400":{
+                        "description": "Non esiste una materia componibile con tali informazioni"
                     }
                 }
             }
@@ -272,7 +344,37 @@
                 "Id_test":{"type":"string"},
                 "Domande":{"$ref":"#/definitions/ArrayDiDomande"}
             }
+        },
+        "BaseTest":
+        {
+            "required":["Id_test","Id_topic","Skill"],
+            "properties":
+            {
+                "Id_test":{"type":"string"},
+                "Id_topic":{"type":"integer"},
+                "Skill":{"type":"integer"}
+            }
+        },
+        "ArrayDiBaseTest":
+        {
+            "type":"array",
+            
+            "items":
+            {
+                "$ref":"#/definitions/BaseTest"
+            }
+        },
+        "IdMateria":
+        {
+            "required":["IdMateria"],
+            "properties":{"IdMateria":{"type":"string"}}
+        },
+        "Materia":
+        {
+            "required":["IdMateria","Nome"],
+            "properties":{"IdMateria":{"type":"string"},"Nome":{"type":"string"}}
         }
+
     },
     "schemes": ["http"],
     "consumes": ["application/json"],

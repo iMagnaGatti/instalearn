@@ -251,29 +251,30 @@ app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
 });
 
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
-    const id_utente=sanitizer.escape(reeq.body.Id_utente);
+    const id_utente=sanitizer.escape(req.body.Id);
     const risp=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     if(risp)
     {
         const skills=await db.collection('skills').find({id_user:id_utente});
-        const arr=skills.toArray();
+        const arr=await skills.toArray();
         var tests=[];
         for(const doc of arr)
         {
-            const risp=db.collection('test').findOne({id_topic: doc.id_topic,rank:doc.rank});
-            tests.push(risp);
+            var ris=await db.collection('test').findOne({id_topic: doc.id_topic,rank:doc.rank});
+            ris=await ris.toArray();
+            tests.push(ris);
         }
-        return res.status(200).send({tests:tests});
+        return res.status(200).send({Tests:tests});
     }
     return res.sendStatus(400);
 });
 
 //getMateria(id_materia)
 app.post('/getMateria',express.json(),async (req,res)=>{
-    const idMateria=sanitizer.escape(req.body.Id_materia);
+    const idMateria=sanitizer.escape(req.body.IdMateria);
     const materia=await db.collection('topic').findOne({_id:new ObjectId(idMateria)});
     if(materia){
-        return res.status(200).send({materia: materia});
+        return res.status(200).send({Materia: materia});
     }else{
         return res.sendStatus(400);
     }
