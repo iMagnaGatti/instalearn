@@ -3,7 +3,10 @@ console.log("lol bro");
 require('dotenv').config();
 
 const express= require('express');
+const swaggerUi=require('swagger-ui-express');
+const swaggerDocument=require('./swagger.json');
 const app=express();
+app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 const mongoose = require('mongoose');
 const bodyParser=require('body-parser');
 var nodemailer = require('nodemailer');
@@ -91,19 +94,18 @@ function decryptionWithCryptoJS(cipher) {
 
     return plainText.toString(CryptoJS.enc.Utf8);
 }
-
 app.post('/signup',express.json(),async (req,res)=>{
     console.log(req.body);
-    const nome=sanitizer.escape(req.body.nome);
-    const cognome=sanitizer.escape(req.body.cognome);
-    const email=sanitizer.escape(req.body.email);
-    const password=sanitizer.escape(req.body.password);
+    const nome=sanitizer.escape(req.body.Nome);
+    const cognome=sanitizer.escape(req.body.Cognome);
+    const email=sanitizer.escape(req.body.Email);
+    const password=sanitizer.escape(req.body.Password);
     //const password=createHashPwd(req.body.password);
     
     const risultato=(await db.collection("users").findOne({email:email}))
     if(risultato){
 
-        return res.sendStatus(505);
+        return res.sendStatus(400);
     }else{
         const criptata=encryptWithCryptoJS(password);
         await db.collection('users').insertOne(
@@ -120,8 +122,8 @@ app.post('/signup',express.json(),async (req,res)=>{
 });
 
 app.post('/login',express.json(),async (req,res)=>{
-    const email=sanitizer.escape(req.body.email);
-    const password=sanitizer.escape(req.body.password);
+    const email=sanitizer.escape(req.body.Email);
+    const password=sanitizer.escape(req.body.Password);
     const ris=await db.collection('users').findOne({email:email});
     if(ris){
         console.log(ris.password);
@@ -139,9 +141,9 @@ app.post('/login',express.json(),async (req,res)=>{
 });
 
 app.post('/cercaInsegnante',express.json(),async (req,res)=>{
-    const topic_id=sanitizer.escape(req.body.topic_id);
-    const skill=sanitizer.escape(req.body.skill);
-    const user_id=sanitizer.escape(req.body.user_id);
+    const topic_id=sanitizer.escape(req.body.Topic_id);
+    const skill=sanitizer.escape(req.body.Skill);
+    const user_id=sanitizer.escape(req.body.User_id);
     const ris=await db.collection('skills').find({topic_id:topic_id,user_id:{$ne:user_id}});
     if(ris)
     {
@@ -190,8 +192,8 @@ function shuffle(array) {
 app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficoltà
     //restituisce un array domande, ogni domanda ha 4 opzione , 3 sbagliate, 1 giusta
     //ogni opzione ha id_domanda, testo,id_opzione....
-    const idMateria=sanitizer.escape(req.body.id_materia);
-    const difficoltà=sanitizer.escape(req.body.difficoltà);
+    const idMateria=sanitizer.escape(req.body.Id_materia);
+    const difficoltà=sanitizer.escape(req.body.Difficoltà);
     const domande=await db.collection('domande').find({id_materia:idMateria,livelloDomanda:difficoltà});
     if(domande){
         //inserire un nuovo test e prendere l'_id
@@ -244,7 +246,7 @@ app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
 });
 
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
-    const id_utente=sanitizer.escape(reeq.body.id_utente);
+    const id_utente=sanitizer.escape(reeq.body.Id_utente);
     const risp=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     if(risp)
     {
@@ -263,7 +265,7 @@ app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
 
 //getMateria(id_materia)
 app.post('/getMateria',express.json(),async (req,res)=>{
-    const idMateria=sanitizer.escape(req.body.id_materia);
+    const idMateria=sanitizer.escape(req.body.Id_materia);
     const materia=await db.collection('topic').findOne({_id:new ObjectId(idMateria)});
     if(materia){
         return res.status(200).send({materia: materia});
@@ -274,7 +276,7 @@ app.post('/getMateria',express.json(),async (req,res)=>{
 
 //getDatiUtente(username_utente)
 app.post('/getDatiUtente',express.json(),async (req,res)=>{
-    const username_utente=sanitizer.escape(req.body.username_utente);
+    const username_utente=sanitizer.escape(req.body.Username_utente);
     const risposta=await db.collection('users').findOne({username: username_utente});
     if(risposta)
     {
@@ -293,7 +295,7 @@ app.post('/getDatiUtente',express.json(),async (req,res)=>{
 
 //getDatiSeStesso(id_utente)
 app.post('/getDatiSeStesso',express.json(),async (req,res)=>{
-    const id_utente=sanitizer.escape(req.body.id_user);
+    const id_utente=sanitizer.escape(req.body.Id_user);
     const dati_utente=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     
     if(dati_utente){
@@ -311,7 +313,7 @@ app.post('/getDatiSeStesso',express.json(),async (req,res)=>{
 
 //getMessaggiAiuto(id_admin)
 app.post('/getMessaggiAiuto',express.json(),async (req,res)=>{
-    const id_admin=sanitizer.escape(req.body.id_admin);
+    const id_admin=sanitizer.escape(req.body.Id_admin);
     const risp=await db.collection('admins').findOne({_id:new ObjectId(id_admin)});
     if(risp)
     {
@@ -324,8 +326,8 @@ app.post('/getMessaggiAiuto',express.json(),async (req,res)=>{
 
 //rispondiMessaggioAiuto(id_messaggio,id_admin,risposta)
 app.post('/rispondiMessaggioAiuto',express.json(),async (req,res)=>{
-    const id_admin=sanitizer.escape(req.body.id_admin);
-    const id_messaggio=sanitizer.escape(req.body.id_messaggio);
+    const id_admin=sanitizer.escape(req.body.Id_admin);
+    const id_messaggio=sanitizer.escape(req.body.Id_messaggio);
     const risposta=sanitizer.escape(risposta);
     const risp=await db.collection('admins').findOne({_id:new ObjectId(id_admin)});
     if(risp)

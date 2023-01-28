@@ -5,8 +5,8 @@ async function login()
     let pass=document.getElementById('password').value;
     const ris=await post_data(api_url+"login",
         {
-            email:email,
-            password:pass
+            Email:email,
+            Password:pass
         }
     );
     if(ris.status==200){

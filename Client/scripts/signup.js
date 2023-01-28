@@ -28,10 +28,10 @@ async function signup()
     }
     else{
         const ris=await post_data(api_url+"signup",{
-            nome:nome,
-            cognome:cognome,
-            email:email,
-            password:pass
+            Nome:nome,
+            Cognome:cognome,
+            Email:email,
+            Password:pass
         });
         if(ris.status==200)
         {

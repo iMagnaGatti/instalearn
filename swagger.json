@@ -1,0 +1,76 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0", 
+      "title": "InstaLearn Project",
+      "description": "InstaLearn Application API",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Autenticazione",
+        "description": "API per l'iscrizione e autenticazione al sito"
+      }
+    ],
+    "paths": {
+        "/signup": {
+            "post": {
+                "tags": [
+                    "Autenticazione"
+                ],
+                "summary": "Permette di registrarsi al sito",
+                "parameters":[{
+                    "in": "body",
+                    "name": "utente",
+                    "description": "Utente da registrare",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/User"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400":{
+                        "description": "L'utente è già presente nel sistema"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "required": [
+                "Email",
+                "Password",
+                "Nome",
+                "Cognome"
+            ],
+            "properties": {
+                "Email": {
+                    "type": "string"
+                },
+                "Password":
+                {
+                    "type":"string"
+                },
+                "Nome": {
+                    "type": "string"
+                },
+                "Cognome": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"]
+  }
