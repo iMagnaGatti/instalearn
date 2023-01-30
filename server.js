@@ -98,12 +98,15 @@ app.post('/signup',express.json(),async (req,res)=>{
     console.log(req.body);
     const nome=sanitizer.escape(req.body.Nome);
     const cognome=sanitizer.escape(req.body.Cognome);
+    const username=sanitizer.extended(req.body.Username);
+    const descrizione=sanitizer.extended(req.body.Descrizione);
     const email=sanitizer.escape(req.body.Email);
     const password=sanitizer.escape(req.body.Password);
     //const password=createHashPwd(req.body.password);
     
-    const risultato=(await db.collection("users").findOne({email:email}))
-    if(risultato){
+    const risultato=(await db.collection("users").findOne({email:email}));
+    const risultato2=(await db.collection("users").findOne({username:username}))
+    if(risultato||risultato2){
 
         return res.sendStatus(400);
     }else{
@@ -113,7 +116,9 @@ app.post('/signup',express.json(),async (req,res)=>{
                 nome:nome,
                 cognome:cognome,
                 email:email,
-                password: criptata
+                password: criptata,
+                descrizione:descrizione,
+                username:username
             }
         );
         return res.sendStatus(200);
@@ -125,17 +130,20 @@ app.post('/login',express.json(),async (req,res)=>{
     const email=sanitizer.escape(req.body.Email);
     const password=sanitizer.escape(req.body.Password);
     const ris=await db.collection('users').findOne({email:email});
-    if(ris){
+    if(ris)
+    {
         console.log(ris.password);
         var decriptata=decryptionWithCryptoJS(ris.password);
         console.log(decriptata);
-        if(decriptata==password){
+        if(decriptata==password)
+        {
         return res.status(200).send({Id: ris._id.valueOf()});
         }
         else
         return res.sendStatus(400);
     }
-    else{
+    else
+    {
         return res.sendStatus(400);
     }
 });
@@ -249,7 +257,7 @@ app.post('/modificaDatiUtente',express.json(),async (req,res)=>{
 app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
     
 });
-
+//getTestDisponibiliPerUtente
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(req.body.Id);
     const risp=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
@@ -278,6 +286,20 @@ app.post('/getMateria',express.json(),async (req,res)=>{
     }else{
         return res.sendStatus(400);
 
+    }
+});
+//getMaterie()
+app.post('/getMaterie',express.json(),async (req,res)=>{
+    var materie=await db.collection('topic').find();
+    if(!materie)
+    res.send(400);
+    else{
+    var att=[];
+    for await(var d of materie)
+    {
+        att.push({Id:d._id.valueOf(),Nome:d.topic});
+    }
+    res.status(200).send({Materie:att});
     }
 });
 

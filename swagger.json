@@ -280,6 +280,27 @@
                     }
                 }
             }
+        },
+        "/getMaterie":
+        {
+            "post": {
+                "tags": [
+                    "Materie"
+                ],
+                "summary": "Permette di conoscere tutte le materie presenti",
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce le materie",
+                        "schema":
+                        {
+                            "$ref":"#/definitions/ArrayDiMaterie"
+                        }
+                    },
+                    "400":{
+                        "description": "Non esistono materie"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -480,6 +501,14 @@
         {
             "required":["IdMateria","Nome"],
             "properties":{"IdMateria":{"type":"string"},"Nome":{"type":"string"}}
+        },
+        "ArrayDiMaterie":
+        {
+            "type":"array",
+            "items":
+            {
+                "$ref":"#/definitions/Materia"
+            }
         },
         "ArrayDiTopicSkill":
         {
