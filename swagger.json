@@ -82,7 +82,7 @@
                         "description": "OK, restituisce l'id dell'utente per creare la sessione",
                         "schema":
                         {
-                            "schema":{"$ref":"#/definitions/IdUtente"}
+                            "$ref":"#/definitions/IdUtente"
                         }
                         
                     },
@@ -301,6 +301,63 @@
                     }
                 }
             }
+        },
+        "/modificaDatiUtente":
+        {
+            "post": {
+                "tags": [
+                    "Utenti"
+                ],
+                "summary": "Permette di modificare i dati del proprio account",
+                "parameters":[{
+                    "in": "body",
+                    "name": "UserModified",
+                    "description": "Informazioni dell'utente aver applicato le modifiche al profilo",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/UserModified"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce le materie"
+                    },
+                    "400":{
+                        "description": "Errore, modifiche non apportate"
+                    }
+                }
+            }
+        },
+        "/inviaRispostaTest":
+        {
+            "post": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Permette di inviare la risposta ad un test",
+                "parameters":[{
+                    "in": "body",
+                    "name": "RispostaTest",
+                    "description": "Informazioni dell'utente aver applicato le modifiche al profilo",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/RispostaTest"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK, restituisce il risultato",
+                        "schema":{
+                            "$ref":"#/definitions/Risultato"
+                        }
+                    },
+                    "400":{
+                        "description": "Errore, modifiche non apportate"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -310,7 +367,8 @@
                 "Password",
                 "Nome",
                 "Cognome",
-                "Username"
+                "Username",
+                "Descrizione"
             ],
             "properties": {
                 "Email": {
@@ -326,7 +384,8 @@
                 "Cognome": {
                     "type": "string"
                 },
-                "Username":{"type":"string"}
+                "Username":{"type":"string"},
+                "Descrizione":{"type":"string"}
             }
         },
         "UserPublic": {
@@ -437,6 +496,15 @@
                 "Testo":{"type":"string"}
             }
         },
+        "IdOpzione":
+        {
+            "required":["Id_opzione"],
+            "properties":
+            {
+                "Id_opzione":{"type":"string"}
+            }
+        }
+        ,
         "ArrayDiOpzioni":
         {
             "type":"array",
@@ -516,6 +584,62 @@
             "items":
             {
                 "$ref":"#/definitions/TopicSkillUtente"
+            }
+        },
+        "UserModified": {
+            "required": [
+                "Id",
+                "Email",
+                "Password",
+                "Nome",
+                "Cognome",
+                "Username",
+                "Descrizione"
+            ],
+            "properties": {
+                "Id":{"type":"string"},
+                "Email": {
+                    "type": "string"
+                },
+                "Password":
+                {
+                    "type":"string"
+                },
+                "Nome": {
+                    "type": "string"
+                },
+                "Cognome": {
+                    "type": "string"
+                },
+                "Username":{"type":"string"},
+                "NewPassword":{"type":"string"},
+                "Descrizione":{"type":"string"}
+            }
+        },
+        "Risultato":
+        {
+            "required":["Id_test","Id_utente","Punteggio"],
+            "properties":{
+                "Id_test":{"type":"string"},
+                "Id_utente":{"type":"string"},
+                "Punteggio":{"type":"string"}
+            }
+        },
+        "ArrayDiRisposte":
+        {
+            "type":"array",
+            "items":
+            {
+                "$ref":"#/definitions/IdOpzione"
+            }
+        },
+        "RispostaTest":
+        {
+            "required":["Id_utente","Id_test","Risposte"],
+            "properties":{
+                "Id_utente":{"type":"string"},
+                "Id_test":{"type":"string"},
+                "Risposte":{"$ref":"#/definitions/ArrayDiRisposte"}
             }
         }
         

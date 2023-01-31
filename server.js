@@ -1,6 +1,5 @@
 
-console.log("lol bro");
-require('dotenv').config();
+console.log("lol bro");require('dotenv').config();
 
 const express= require('express');
 const swaggerUi=require('swagger-ui-express');
@@ -98,8 +97,8 @@ app.post('/signup',express.json(),async (req,res)=>{
     console.log(req.body);
     const nome=sanitizer.escape(req.body.Nome);
     const cognome=sanitizer.escape(req.body.Cognome);
-    const username=sanitizer.extended(req.body.Username);
-    const descrizione=sanitizer.extended(req.body.Descrizione);
+    const username=sanitizer.escape(req.body.Username);
+    const descrizione=sanitizer.escape(req.body.Descrizione);
     const email=sanitizer.escape(req.body.Email);
     const password=sanitizer.escape(req.body.Password);
     //const password=createHashPwd(req.body.password);
@@ -250,13 +249,72 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
 
 //modificaDatiUtente(id_utente, datiUtente)
 app.post('/modificaDatiUtente',express.json(),async (req,res)=>{
-    
+    console.log(req.body);
+    const id=sanitizer.escape(req.body.Id)
+    const nome=sanitizer.escape(req.body.Nome);
+    const cognome=sanitizer.escape(req.body.Cognome);
+    const email=sanitizer.escape(req.body.Email);
+    const password=sanitizer.escape(req.body.Password);
+    var password_new=sanitizer.escape(req.body.NewPassword);
+    if(!password_new)
+    password_new=password;
+    const descrizione=sanitizer.escape(req.body.Descrizione);
+    const username=sanitizer.escape(req.body.Username);
+    if(id&&nome&&cognome&&email&&password&&descrizione)
+    {
+        const ris=await db.collection('users').findOne({_id:new ObjectId(id)});
+        if(ris)
+        {
+            var decriptata=decryptionWithCryptoJS(ris.password);
+            if(decriptata==password)
+            {
+                var r=await db.collection('users').findOne({username:username});
+                var r2=await db.collection('users').findOne({email:email});
+                if((r&&(ris.username!=username))||(r2&&(ris.email!=email)))
+                {
+                    res.sendStatus(400);
+                }
+                else
+                {
+                    const criptata=encryptWithCryptoJS(password_new);
+                    await db.collection('users').updateOne({_id: new ObjectId(id)},{$set:{nome:nome,cognome:cognome,email:email,password:criptata,descrizione:descrizione,username:username}});
+                    res.sendStatus(200);
+                }
+            }
+            else
+            return res.sendStatus(400);
+        }
+        else
+        {
+            return res.sendStatus(400);
+        }
+    }
+    else res.sendStatus(400);
+
 });
 
 //inviaRipostaTest(risposte, domande, id_test): calcola il punteggio, se punteggio è >=6 aggiorna skill
 app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
-    
+    const arr=sanitizer.escape(req.body.Risposte);
+    const IdTest=sanitizer.escape(req.body.Id_test);
+    const Id=sanitizer.escape(req.body.Id_utente);
+    if(arr&&Id&&IdTest)
+    {
+        var p=0;
+        for(const r of arr)
+        {
+            const risp=await db.collection('opzione').findOne({_id:new ObjectId(r.id_opzione)});
+            if(risp.giusta)
+                p++;
+        }
+        var punteggio=((p+0.0)/10.0)*100;
+        await db.collection('punteggio_test').insertOne({id_test:IdTest,id_utente:Id,punteggio:punteggio});
+        res.status(200).send({Id_test:IdTest,Id_utente:Id,Punteggio:punteggio});
+    }
+    else
+    res.sendStatus(400);
 });
+
 //getTestDisponibiliPerUtente
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(req.body.Id);
