@@ -52,3 +52,28 @@ async function modificaDati()
     }   
 
 }
+async function getProfilo()
+{
+    var id=getCookie("instalearn_id");
+    console.log(id);
+    const risp=await post_data(api_url+"getDatiSeStesso",{Id:id});
+    if(risp.status==200)
+    {
+        
+        const ogg=await risp.json();
+        document.getElementById("nome").innerHTML=ogg.Nome+" "+ogg.Cognome;
+        document.getElementById("email").innerHTML=ogg.Email;
+        document.getElementById("username").innerHTML=ogg.Username;
+        document.getElementById("descrizione").innerHTML=ogg.Descrizione;
+        const arr=ogg.Skills;
+        document.getElementById("materie").innerHTML="";
+
+        for(const d of arr)
+        {
+            document.getElementById("materie").innerHTML+="<div style='text-align: center;'><button style='width: 200px;'>"+d.Materia+" "+d.Skill+"</button></div>";
+        }
+    }
+    else{
+        //impossibile caricare i dati dell'utente
+    }
+}

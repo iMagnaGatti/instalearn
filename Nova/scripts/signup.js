@@ -39,8 +39,7 @@ async function signup()
         });
         if(ris.status==200)
         {
-            alert("Registrazione andata a buon fine");
-            window.location.replace(api_url+"/index.html");
+            window.location.replace("./index.html");
         }
         else if(ris.status==400)
         {

@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
+  <script src="scripts/main.js"></script>
+  <script src="scripts/utente.js"></script>
   <title>Profilo</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
@@ -36,7 +37,7 @@
   ======================================================== -->
 </head>
 
-<body class="page-team">
+<body class="page-team" onload="getProfilo()">
 
   <!-- ======= Header ======= -->
   <header id="header" class="header d-flex align-items-center fixed-top">
@@ -88,7 +89,7 @@
       <div class="container" data-aos="fade-up">
 
         <div class="section-header">
-          <h2>Mario Rossi</h2>
+          <h2 id="nome">Mario Rossi</h2>
 
         </div>
         <style>
@@ -113,23 +114,25 @@
                 </div>
               </div>
               <div class="member-info">
-                <h4>MarioRossi99@gmail.com</h4>
-                <span>Studente di Matematica</span>
+                <h4 id="email">MarioRossi99@gmail.com</h4>
+                <span id="username">Account utente</span>
               </div>
-              <div style="text-align: center;">
+              <div id="descrizione" style="text-align: center;">
                 Sono uno studente al terzo anno di Matematica. 
                 Da sempre sono appassionato a questa materia e..
               </div>
               <div style="text-align: center;">
                 <h3>Skill:</h3>
               </div>
-              <div style="text-align: center;">
-                <button style="width: 200px;">Analisi 1: 4</button>
-                <button style="width: 200px;">Algebra Lineare: 5</button>
-              </div>
-              <div style="text-align: center;">
-                <button style="width: 200px;">Inglese: 3</button>
-                <button style="width: 200px;">Tedesco: 0</button>
+              <div id="materie">
+                <div style="text-align: center;">
+                  <button style="width: 200px;">Analisi 1: 4</button>
+                  <button style="width: 200px;">Algebra Lineare: 5</button>
+                </div>
+                <div style="text-align: center;">
+                  <button style="width: 200px;">Inglese: 3</button>
+                  <button style="width: 200px;">Tedesco: 0</button>
+                </div>
               </div>
             </div>
           </div><!-- End Team Member -->
@@ -194,7 +197,7 @@
               Povo, Trento <br>
               Italia <br><br>
               <strong>Telefono:</strong> +1 5589 55488 55<br>
-              <strong>Email:</strong> intalearn@gmail.com<br>
+              <strong>Email:</strong> instalearn@gmail.com<br>
             </p>
 
           </div>

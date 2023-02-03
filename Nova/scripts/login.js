@@ -12,7 +12,7 @@ async function login()
     if(ris.status==200){
     const ogg=await ris.json();
     console.log(ogg);
-    let id=ogg.id;
+    let id=ogg.Id;
     setCookie("instalearn_id",id,0.5);
     window.location.href = "index.html";
     }

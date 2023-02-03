@@ -149,18 +149,19 @@ app.post('/login',express.json(),async (req,res)=>{
 
 app.post('/cercaInsegnante',express.json(),async (req,res)=>{
     const topic_id=sanitizer.escape(req.body.Id_topic);
-    const skill=sanitizer.escape(req.body.Skill);
+    const skill=parseInt(sanitizer.escape(req.body.Skill));
     const user_id=sanitizer.escape(req.body.User_id);
-    const ris=await db.collection('skills').find({Id_topic:topic_id,user_id:{$ne:user_id},rank:{$gt:skill}});
+    console.log(topic_id+" "+skill+" "+user_id);
+    const ris=await db.collection('skills').find({id_topic:topic_id,id_user:{$ne:user_id},rank:{$gt:skill}});
     if(ris)
     {
         var arr=[];
-        const risultati=await ris.toArray();
-        for await (const doc of risultati)
+        var risultati=await ris.toArray();
+        for await (var doc of risultati)
         {
             
-            const tot=await db.collection('users').findOne({_id:new ObjectId(doc.user_id)});
-            
+            const tot=await db.collection('users').findOne({_id:new ObjectId(doc.id_user)});
+            console.log(doc);
             if(tot)
             {
                 await arr.push({Username:tot.username,Skill:doc.rank});
