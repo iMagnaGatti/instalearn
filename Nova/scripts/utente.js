@@ -27,7 +27,8 @@ async function modificaDati()
     else if(!controllo){
         alert("la password deve rispettare i seguenti requisiti:\n-Lunghezza di almeno 8 caratteri\n-Almeno una lettera maiuscola\n-Almeno un numero");
     }
-    else{
+    else
+    {
         let descrizione=document.getElementById('descrizione').value;
         const risp=await post_data(api_url+"inviaRispostaTest", 
         {

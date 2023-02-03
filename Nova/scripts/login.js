@@ -14,6 +14,7 @@ async function login()
     console.log(ogg);
     let id=ogg.id;
     setCookie("instalearn_id",id,0.5);
+    window.location.href = "index.html";
     }
     else
     alert("Error "+ris.status);

@@ -221,7 +221,7 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
             var arrOpzioni=await opzioniSbagliate.toArray();
             arrOpzioni=shuffle(arrOpzioni);
             console.log(domanda);
-            var opzioniDomanda=arrOpzioni.slice(0,3); //prende i primi 3 elementi dell'array
+            var opzioniDomanda=arrOpzioni.slice(0,1);s //prende i primi 3 elementi dell'array
             await opzioniDomanda.push(await arropzioniGiuste[0]); //aggiungo l'opzione giusta
             opzioniDomanda=await shuffle(opzioniDomanda); //ordino random
             var opzioni_fatte=[];
