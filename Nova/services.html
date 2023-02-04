@@ -8,6 +8,8 @@
   <title>Testa le tue conoscenze</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
+  <script src="scripts/materie.js"></script>
+  <script src="scripts/main.js"></script>
 
   <!-- Favicons -->
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -31,7 +33,7 @@
  
 </head>
 
-<body class="page-services">
+<body class="page-services" onload="caricaMaterie()">
 
   <!-- ======= Header ======= -->
   <header id="header" class="header d-flex align-items-center fixed-top">
@@ -85,7 +87,7 @@
         <div class=" row gy-4" data-aos="fade-up">
           <div class=" col-lg-4">
             <label style="font-size: 20px;">ARGOMENTO: </label>
-            <select class="d-inline-flex" style="font-size: 20px;" name="Topic">
+            <select class="d-inline-flex" style="font-size: 20px;" id="materie" name="Topic">
               <option style="font-size: 20px;">Analisi 1</option>
               <option style="font-size: 20px;">Algebra Lineare</option>
               <option style="font-size: 20px;">Latino</option>
