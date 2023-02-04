@@ -59,6 +59,11 @@ async function inviaTest(Id_test)
     //costruisco array delle risposte
     var id_utente=getCookie("instalearn_id");
     
+    const ndomanda=1;
+    while(ndomanda<=10){
+        //devo prendere le risposte che l'utente ha selezionato e metterle in arr
+    }
+
     const risp=await post_data(api_url+"inviaRispostaTest",
     {
         Risposte:arr,
