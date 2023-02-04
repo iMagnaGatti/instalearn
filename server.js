@@ -110,7 +110,7 @@ app.post('/signup',express.json(),async (req,res)=>{
         return res.sendStatus(400);
     }else{
         const criptata=encryptWithCryptoJS(password);
-        await db.collection('users').insertOne(
+        const risp3=await db.collection('users').insertOne(
             {
                 nome:nome,
                 cognome:cognome,
@@ -120,6 +120,14 @@ app.post('/signup',express.json(),async (req,res)=>{
                 username:username
             }
         );
+        const id=risp3.insertedId.valueOf();
+        console.log(id);
+        const materie=await db.collection('topic').find();
+        var arr=await materie.toArray();
+        for(var d  of arr)
+        {
+            await db.collection('skills').insertOne({rank:0,id_topic:d._id.valueOf(),id_user:id}); 
+        }
         return res.sendStatus(200);
     }
 
@@ -324,14 +332,7 @@ app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     {
         const skills=await db.collection('skills').find({id_user:id_utente});
         const arr=await skills.toArray();
-        var tests=[];
-        for(const doc of arr)
-        {
-            var ris=await db.collection('test').findOne({id_topic: doc.id_topic,rank:doc.rank});
-            ris=await ris.toArray();
-            tests.push(ris);
-        }
-        return res.status(200).send({Tests:tests});
+        return res.status(200).send({Tests:arr});
     }
     return res.sendStatus(400);
 });
@@ -341,7 +342,7 @@ app.post('/getMateria',express.json(),async (req,res)=>{
     const idMateria=sanitizer.escape(req.body.IdMateria);
     const materia=await db.collection('topic').findOne({_id:new ObjectId(idMateria)});
     if(materia){
-        return res.status(200).send({Materia: materia});
+        return res.status(200).send(materia);
     }else{
         return res.sendStatus(400);
 

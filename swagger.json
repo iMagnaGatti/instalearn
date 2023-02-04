@@ -176,10 +176,10 @@
                 }],
                 "responses": {
                     "200": {
-                        "description": "OK, restituisce un Array contente le informazioni base dei Test consigliati",
+                        "description": "OK, restituisce un Array contente le Skills di un utente",
                         "schema":
                         {
-                            "$ref":"#/definitions/ArrayDiBaseTest"
+                            "$ref":"#/definitions/ArrayDiTopicSkill"
                         }
                     },
                     "400":{
