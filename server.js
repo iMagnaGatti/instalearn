@@ -126,7 +126,7 @@ app.post('/signup',express.json(),async (req,res)=>{
         var arr=await materie.toArray();
         for(var d  of arr)
         {
-            await db.collection('skills').insertOne({rank:0,id_topic:d._id.valueOf(),id_user:id}); 
+            await db.collection('skills').insertOne({rank:1,id_topic:d._id.valueOf(),id_user:id}); 
         }
         return res.sendStatus(200);
     }
@@ -230,7 +230,7 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
             var arrOpzioni=await opzioniSbagliate.toArray();
             arrOpzioni=shuffle(arrOpzioni);
             console.log(domanda);
-            var opzioniDomanda=arrOpzioni.slice(0,1);s //prende i primi 3 elementi dell'array
+            var opzioniDomanda=arrOpzioni.slice(0,1); //prende i primi 3 elementi dell'array
             await opzioniDomanda.push(await arropzioniGiuste[0]); //aggiungo l'opzione giusta
             opzioniDomanda=await shuffle(opzioniDomanda); //ordino random
             var opzioni_fatte=[];

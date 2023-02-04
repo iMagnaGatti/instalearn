@@ -17,7 +17,8 @@ async function login()
     window.location.href = "index.html";
     }
     else
-    alert("Error "+ris.status);
+    alert("Le credenziali non corrispondono ad un account, riprova");
+
     
 }
 function controlla()
@@ -27,6 +28,7 @@ function controlla()
     console.log(ris);
     if(ris=="")
     {
-        document.getElementById("form").setAttribute("style","visibility:visible");
+        document.getElementById("form").style.visibility="hidden";
     }
+    
 }

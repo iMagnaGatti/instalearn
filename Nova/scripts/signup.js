@@ -43,11 +43,11 @@ async function signup()
         }
         else if(ris.status==400)
         {
-            alert("Email o username già registrato");
+            alert("Email o username già registrato, riprova");
         }
         else
         {
-            alert("Errore "+ris.status);
+            window.location.replace("./errore.html");
         }
     }
 }

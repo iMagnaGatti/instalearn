@@ -11,12 +11,12 @@ async function caricaMaterie()
             document.getElementById("materie").innerHTML+="<option style='font-size: 20px;' value='"+d.Id+"'>"+d.Nome+"</option>";
         }
     }
-    else{}
-    //reindirizzo
+    else{
+        window.location.replace("./error.html");
+    }
 }
 async function trovaInsegnante(){
     const lol={Id_topic:document.getElementById('materie').value,Skill:parseInt(document.getElementById('livello').value),User_id:getCookie("instalearn_id")};
-    console.log(lol);
     const ris=await post_data(api_url+"cercaInsegnante",lol);
     if(ris.status==200){
         var jsonData = await ris.json();
@@ -39,6 +39,6 @@ async function trovaInsegnante(){
     }
     else
     {
-        //errore
+        window.location.replace("./error.html");
     }
 }
