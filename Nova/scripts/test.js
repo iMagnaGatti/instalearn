@@ -9,14 +9,28 @@ async function caricaTest()
         var s="";
         for(const test of arr)
         {
-            s+='<div class="col-lg-6" data-aos="fade-up" data-aos-delay="400"><div class="card-item"><div class="row"><div class="col-xl-5"><div class="card-bg" style="background-image: url(assets/img/funz.png);"></div></div><div class="col-xl-7 d-flex align-items-center"><div class="card-body"><h4 class="card-title">Analisi 1 -Modulo 4 "Studio di funzione"</h4><p>In questo modulo troverai 10 domande a risposta multipla sullo studio di funzione. Per superare il test dovrai dare almeno 7 risposte corrette.</p></div></div></div></div></div>'
+            const nomeMateria= await post_data(api_url+"getMateria",{IdMateria:test.id_topic});
+            const nome=nomeMateria.topic;
+            //qua devi fare che per ogni test metti un bottone che se lo premi viene chiamata la funzione cookieTest( con parametri Id_utente:id_utente, Id_topic:test.id_topic e skill:test.rank)
+            s+='<div class="col-lg-6" data-aos="fade-up" data-aos-delay="400"><div class="card-item"><div class="row"><div class="col-xl-5"><div class="card-bg" style="background-image: url(assets/img/funz.png);"></div></div><div class="col-xl-7 d-flex align-items-center"><div class="card-body"><h4 class="card-title">'+nome+'Analisi 1 -Modulo '+test.rank+' </h4><p>In questo modulo troverai 10 domande a risposta multipla. Per superare il test dovrai dare almeno 7 risposte corrette.</p></div></div></div></div></div>'
         }
         document.getElementById("services-cards").innerHTML=s;
     }
 }
-
-async function eseguiTest(Id,Id_topic,Skill)
+async function cookiesTest(Id,Id_topic,Skill){
+    setCookie("Id",Id,0.5);
+    setCookie("Id_topic",Id_topic,0.5);
+    setCookie("Skill",Skill,0.5);
+    location.href = "test.html";
+    //qua devi settare i cookies "Id, Id_topic e Skill e poi reindirizzare a test.html"
+}
+async function eseguiTest()
 {
+    
+    const Id=getCookie("Id");
+    const Id_topic=getCookie("Id_topic");
+    const Skill=getCookie("Skill");
+    
     let ogg={Id:Id,Id_Topic:Id_topic,Skill:Skill};
     const risp=await post_data(api_url+"generaTest",ogg);
     if(risp.status==200)
