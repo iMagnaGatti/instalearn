@@ -42,16 +42,22 @@ async function eseguiTest()
     const risp=await post_data(api_url+"generaTest",ogg);
     if(risp.status==200)
     {
+
         const g=await risp.json();
-        var domande=await g.Domande;
+        setCookie("Id_test",g.Id_test,0.5);
+        var domande=g.Domande;
         var s="";
         var ndomanda=1;
         for(const domanda of domande){
-          s+='<div class="testimonial-item" style="min-height:200px; padding-bottom:0px; margin-bottom: 0px; border-bottom: 0px;"><h5>Domanda '+ndomanda+'</h5><br>  <h3 style="font-size:20px">'+domanda.Domanda.Testo+'</h3><br><div style="font-size: 20px"> <input type="radio" id="domanda'+ndomanda+'" name="domanda'+ndomanda+'" value="YES"><label for="YES">SI</label><input type="radio" id="domanda'+ndomanda+'" name="domanda'+ndomanda+'" value="NO"><label for="NO">NO</label></div> </div>'  
+            var opzioni=domanda.Opzioni;
+            s+='<div class="testimonial-item" style="min-height:200px; padding-bottom:0px; margin-bottom: 0px; border-bottom: 0px;"><h5>Domanda '+ndomanda+'</h5><br>  <h3 style="font-size:20px">'+domanda.Domanda.Testo+'</h3><br><div style="font-size: 20px">';
+            for(var  o of opzioni)
+            s+='<input type="radio" id="domanda'+ndomanda+'" name="domanda'+ndomanda+'" value="'+o.Id+'"><label for="'+o.Id+'">'+o.Testo+'</label>'
+            s+='</div> </div>';  
           ndomanda+=1;
         }
-        s+='<input type="submit" value="CONCLUDI IL TEST">';
-        document.getElementById("FormDomande").innerHTML=s;
+        s+='<button onclick="inviaTest()">CONCLUDI IL TEST</button>';
+        document.getElementById("divDomande").innerHTML=s;
         //inserisci html le domande e le opzioni
     }
     else
@@ -60,28 +66,40 @@ async function eseguiTest()
     }
 }
 
-async function inviaTest(Id_test)
+async function inviaTest()
 {
+    console.log("ciao");
     var arr=[];
     //costruisco array delle risposte
-    var id_utente=getCookie("instalearn_id");
-    
-    const ndomanda=1;
-    while(ndomanda<=10){
-
+    for(let i=1;i<=10;i++)
+    {
+        var ele=document.getElementsByName("domanda"+i);
+        var ok=false;
+        for(j=0;j<ele.length;j++){
+            if(ele[j].checked){
+            arr.push({id_opzione: ele[j].value});
+            ok=true;
+            }
+        }
+        if(!ok)
+        {
+            arr.push({id_opzione:ele[0].value});
+        }
     }
-
+    console.log(arr);
+    const Id_test=getCookie("Id_test");
+    const Id_utente=getCookie("instalearn_id");
     const risp=await post_data(api_url+"inviaRispostaTest",
     {
-        Risposte:arr,
+        Risposte:JSON.stringify(arr),
         Id_test:Id_test,
-        Id_utente:id_utente
+        Id_utente:Id_utente
     });
     if(risp.status==200)
     {
-        const ogg=risp.json();
-        var punteggio=ogg.punteggio;
+        const ogg=await risp.json();
         //visualizza punteggio
+        alert("PUNTEGGIO: "+ogg.Punteggio+"% ");
     }
     else
     {

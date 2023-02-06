@@ -304,21 +304,26 @@ app.post('/modificaDatiUtente',express.json(),async (req,res)=>{
 
 //inviaRipostaTest(risposte, domande, id_test): calcola il punteggio, se punteggio è >=6 aggiorna skill
 app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
-    const arr=sanitizer.escape(req.body.Risposte);
+    var arr=JSON.parse(req.body.Risposte);
     const IdTest=sanitizer.escape(req.body.Id_test);
     const Id=sanitizer.escape(req.body.Id_utente);
     if(arr&&Id&&IdTest)
     {
-        var p=0;
-        for(const r of arr)
+        let p=0;
+        for(var r of arr)
         {
+            console.log(r);
             const risp=await db.collection('opzione').findOne({_id:new ObjectId(r.id_opzione)});
-            if(risp.giusta)
-                p++;
+            if(risp)
+            {
+                console.log(risp);
+                if(risp.giusta)
+                    p++;
+            }
         }
-        var punteggio=((p+0.0)/10.0)*100;
+        let punteggio=p*10;
         await db.collection('punteggio_test').insertOne({id_test:IdTest,id_utente:Id,punteggio:punteggio});
-        res.status(200).send({Id_test:IdTest,Id_utente:Id,Punteggio:punteggio});
+        res.status(200).send({Id_test:IdTest,Id_utente:Id,Punteggio:parseInt(punteggio)});
     }
     else
     res.sendStatus(400);
