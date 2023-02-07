@@ -160,7 +160,7 @@ app.post('/cercaInsegnante',express.json(),async (req,res)=>{
     const skill=parseInt(sanitizer.escape(req.body.Skill));
     const user_id=sanitizer.escape(req.body.User_id);
     console.log(topic_id+" "+skill+" "+user_id);
-    const ris=await db.collection('skills').find({id_topic:topic_id,id_user:{$ne:user_id},rank:{$gt:skill}});
+    const ris=await db.collection('skills').find({id_topic:topic_id,id_user:{$ne:user_id},rank:{$gte:skill}});
     if(ris)
     {
         var arr=[];
@@ -238,11 +238,11 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
             for await (var opzione of opzioniDomanda){
                     if(opzione){
                     opzioni_fatte.push({Id:opzione._id.valueOf(), Testo:opzione.testo});
-                    await db.collection('test_domanda_opzione').insertOne({
+                    /*await db.collection('test_domanda_opzione').insertOne({
                         id_opzione:opzione._id.valueOf(),
                         id_domanda:domanda._id.valueOf(),
                         id_test:id_test.valueOf()
-                    });
+                    });*/
                 }
             }
             test.push({Domanda:{"Id_domanda":domanda._id.valueOf(),"Testo":domanda.testo}, Opzioni:opzioni_fatte});

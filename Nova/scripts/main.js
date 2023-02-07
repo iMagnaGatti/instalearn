@@ -1,6 +1,7 @@
 const mode = "test"; //"live"
 const api_url = mode === "test" ? "http://127.0.0.1:3000/" : "da inserire";
 var id=null;
+var username="";
 async function post_data(url, data) {
     return await fetch(url, {
         method: 'POST',
@@ -43,10 +44,29 @@ function setCookie(cname,  cvalue, exdays) {
     let expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-
+function removeCookie(cname)
+{
+    if( getCookie( cname ) ) {
+        document.cookie = cname + "=" +
+          ";path=/"+
+          ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      }
+}
 function logout(){
-    document.cookie = "instalearn_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    removeCookie("instalearn_id");
     id = null;
     window.location.replace("./index.html");
-
+}
+function load()
+{
+    const id=getCookie("instalearn_id");
+    if(id!="")
+    {
+        document.getElementById("list").innerHTML+='<li ><a href="" onclick="logout()">Log Out</a></li>';
+    }
+    else
+    {
+        document.getElementById("list").innerHTML+='<li><a href="login.html">Log In</a></li>';
+        document.getElementById("list").innerHTML+='<li><a href="signup.html">Sign Up</a></li>';
+    }
 }

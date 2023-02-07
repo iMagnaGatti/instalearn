@@ -27,6 +27,7 @@
 
   <!-- Template Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
+  <script src="scripts/main.js"></script>
 
   <!-- =======================================================
   * Template Name: Nova - v1.2.0
@@ -36,7 +37,7 @@
   ======================================================== -->
 </head>
 
-<body class="page-index">
+<body class="page-index" onload="load()">
 
   <!-- ======= Header ======= -->
   <header id="header" class="header d-flex align-items-center fixed-top">
@@ -52,7 +53,7 @@
       <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
 
       <nav id="navbar" class="navbar">
-        <ul>
+        <ul id="list">
           
           <li><a href="index.html" class="active">Home</a></li>
           <li><a href="trovaInsegnante.html">Trova un insegnante</a></li>

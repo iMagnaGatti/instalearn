@@ -68,7 +68,6 @@ async function eseguiTest()
 
 async function inviaTest()
 {
-    console.log("ciao");
     var arr=[];
     //costruisco array delle risposte
     for(let i=1;i<=10;i++)
@@ -99,10 +98,12 @@ async function inviaTest()
     {
         const ogg=await risp.json();
         //visualizza punteggio
-        alert("PUNTEGGIO: "+ogg.Punteggio+"% ");
+        window.location.replace("./risultato.html?punteggio="+ogg.Punteggio);
     }
     else
     {
         window.location.replace("./error.html");
     }
+    removeCookie("Id_test");
+    removeCookie("Skill");
 }
