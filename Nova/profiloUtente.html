@@ -37,7 +37,7 @@
   ======================================================== -->
 </head>
 
-<body class="page-team" onload="getProfilo();load()">
+<body class="page-team" onload="getProfiloUtente();load()">
 
   <!-- ======= Header ======= -->
   <header id="header" class="header d-flex align-items-center fixed-top">
@@ -61,12 +61,10 @@
           <li></li>
         </ul>
       </nav><!-- .navbar -->
-
     </div>
   </header><!-- End Header -->
 
   <main id="main">
-
     <!-- ======= Breadcrumbs ======= -->
     <div class="breadcrumbs d-flex align-items-center" style="background-image: url('assets/img/team-header.jpg');">
       <div class="container position-relative d-flex flex-column align-items-center">
@@ -79,9 +77,8 @@
 
       </div>
     </div><!-- End Breadcrumbs -->
-
     <!-- ======= Team Section ======= -->
-    <section id="team" class="team">
+    <section id="team" class="team" style="visibility:hidden;">
       <div class="container" data-aos="fade-up">
 
         <div class="section-header">
@@ -89,17 +86,17 @@
 
         </div>
         <style>
-            .center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 25%;
-}
+                      .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 25%;
+          }
         </style>
-        <div style="align-items: center;margin-left: 700;" >
+        <div style="align-items: center;margin-left: 700;">
 
           <div  data-aos="fade-up" data-aos-delay="100" style="align-items: center;">
-            <div class="team-member">
+            <div class="team-member" >
               <div class="member-img">
                 <img src="assets/img/team/team-1.jpg" class="center">
                 <div style="text-align: center;">
@@ -110,7 +107,6 @@
                 </div>
               </div>
               <div class="member-info">
-                <h4 id="email">MarioRossi99@gmail.com</h4>
                 <span id="username">Account utente</span>
               </div>
               <div id="descrizione" style="text-align: center;">
@@ -133,6 +129,7 @@
             </div>
           </div><!-- End Team Member -->
 
+
           
 
           
@@ -143,12 +140,10 @@
 
       </div>
     </section><!-- End Team Section -->
-
   </main><!-- End #main -->
 
    <!-- ======= Footer ======= -->
    <footer id="footer" class="footer">
-
     <div class="footer-content">
       <div class="container">
         <div class="row gy-4">

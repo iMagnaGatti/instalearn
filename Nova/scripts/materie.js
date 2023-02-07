@@ -1,5 +1,7 @@
 async function caricaMaterie()
 {
+    if(getCookie("instalearn_id")=="")
+    window.location.replace("./error.html");
     const risp=await post_data(api_url+"getMaterie");
     if(risp.status==200)
     {
@@ -16,6 +18,8 @@ async function caricaMaterie()
     }
 }
 async function trovaInsegnante(){
+    if(getCookie("instalearn_id")=="")
+    window.location.replace("./error.html");
     const lol={Id_topic:document.getElementById('materie').value,Skill:parseInt(document.getElementById('livello').value),User_id:getCookie("instalearn_id")};
     const ris=await post_data(api_url+"cercaInsegnante",lol);
     if(ris.status==200){

@@ -1,5 +1,7 @@
 async function caricaTest()
 {
+    if(getCookie("instalearn_id")=="")
+    window.location.replace("./error.html");
     let id_utente=getCookie("instalearn_id");
     const risp= await post_data(api_url+"getTestDisponibiliPerUtente",{Id:id_utente});
     if(risp.status==200)
@@ -32,7 +34,8 @@ async function cookiesTest(Id_topic,Skill){
 }
 async function eseguiTest()
 {
-    
+    if(getCookie("instalearn_id")=="")
+    window.location.replace("./error.html");
     const Id=getCookie("instalearn_id");
     const Id_topic=getCookie("Id_topic");
     const Skill=getCookie("Skill");
@@ -68,6 +71,8 @@ async function eseguiTest()
 
 async function inviaTest()
 {
+    if(getCookie("instalearn_id")=="")
+    window.location.replace("./error.html");
     var arr=[];
     //costruisco array delle risposte
     for(let i=1;i<=10;i++)

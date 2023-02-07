@@ -1,5 +1,7 @@
 async function caricaRisultato()
 {
+    if(getCookie("instalearn_id")=="")
+    window.location.replace("./error.html");
     const queryString=window.location.search;
     const urlParams=new URLSearchParams(queryString);
     let ris="";

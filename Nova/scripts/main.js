@@ -62,6 +62,10 @@ function load()
     const id=getCookie("instalearn_id");
     if(id!="")
     {
+        document.getElementById("list").innerHTML+='<li><a href="trovaInsegnante.html">Trova un insegnante</a></li>'+
+        '<li><a href="cercaTest.html">Testa le tue conoscenze</a></li>'+
+        '<li><a href="profilo.html">Profilo&nbsp;&nbsp;&nbsp;&nbsp;</a></li>';
+        document.getElementById("list").innerHTML+='<li><input type="text" placeholder="Username" id="username"><button onclick="cercaUtente()">Cerca</button></li>';
         document.getElementById("list").innerHTML+='<li ><a href="" onclick="logout()">Log Out</a></li>';
     }
     else
@@ -69,4 +73,9 @@ function load()
         document.getElementById("list").innerHTML+='<li><a href="login.html">Log In</a></li>';
         document.getElementById("list").innerHTML+='<li><a href="signup.html">Sign Up</a></li>';
     }
+}
+function cercaUtente()
+{
+    let username=document.getElementById("username").value;
+    window.location.replace("./profiloUtente.html?username="+username);
 }

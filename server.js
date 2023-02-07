@@ -371,6 +371,7 @@ app.post('/getMaterie',express.json(),async (req,res)=>{
 //getDatiUtente(username_utente)
 app.post('/getDatiUtente',express.json(),async (req,res)=>{
     const username_utente=sanitizer.escape(req.body.Username);
+    console.log(username_utente);
     const risposta=await db.collection('users').findOne({username: username_utente});
     if(risposta)
     {
@@ -387,7 +388,7 @@ app.post('/getDatiUtente',express.json(),async (req,res)=>{
         return res.status(200).send({Username:risposta.username, Nome:risposta.nome,Cognome:risposta.cognome,Descrizione:risposta.descrizione,Skills:att});
     }
     else
-    return res.status(400);
+    return res.sendStatus(400);
 });
 
 //getDatiSeStesso(id_utente)
