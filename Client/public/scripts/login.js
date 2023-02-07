@@ -3,7 +3,7 @@ async function login()
 {
     let email=document.getElementById('email').value;
     let pass=document.getElementById('password').value;
-    const ris=await post_data(api_url+"login",
+    const ris=await post_data("https://instalearn.herokuapp.com/login",
         {
             Email:email,
             Password:pass
