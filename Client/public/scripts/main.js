@@ -1,5 +1,5 @@
 const mode = "live"; //"live"
-const api_url = mode === "test" ? "http://127.0.0.1:3000/" : "da inserire";
+const api_url = mode === "test" ? "http://127.0.0.1:3000/" : "https://instalearn.herokuapp.com/";
 var id=null;
 var username="";
 async function post_data(url, data) {
