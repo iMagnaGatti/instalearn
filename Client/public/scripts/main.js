@@ -1,4 +1,4 @@
-const mode = "test"; //"live"
+const mode = "live"; //"live"
 const api_url = mode === "test" ? "http://127.0.0.1:3000/" : "da inserire";
 var id=null;
 var username="";
