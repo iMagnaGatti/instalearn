@@ -64,7 +64,7 @@ app.use(function (req, res, next) {
 });
 app.use(helmet());
 app.use(express.static('.'));
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(rateLimit({windowMs: 10 * 60 * 1000, max: 100}));
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
