@@ -424,7 +424,14 @@ app.post('/getMessaggiAiuto',express.json(),async (req,res)=>{
     }
     return res.sendStatus(400);
 });
-
+app.post('/inviaMessaggioAiuto',express.json(),async (req,res)=>{
+    const nome=sanitizer.escape(req.body.Nome);
+    const email=sanitizer.escape(req.body.Email);
+    const soggetto=sanitizer.escape(req.body.Soggetto);
+    const messaggio=sanitizer.escape(req.body.Messaggio);
+    await db.collection('messaggi_aiuto').insertOne({nome:nome,email:email,soggetto:soggetto,messaggio:messaggio});
+    return res.sendStatus(200);
+});
 //rispondiMessaggioAiuto(id_messaggio,id_admin,risposta)
 app.post('/rispondiMessaggioAiuto',express.json(),async (req,res)=>{
     const id_admin=sanitizer.escape(req.body.Id_admin);
