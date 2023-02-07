@@ -19,6 +19,8 @@ const transporter = nodemailer.createTransport({
 
 var CryptoJS = require("crypto-js");
 const cors = require('cors');
+const mode="live";
+const whitelist = mode === "test" ? ['http://127.0.0.1:5500']:['instalearn-364320.web.app', 'instalearn-364320.firebaseapp.com'];
 var corsOptions = {
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
