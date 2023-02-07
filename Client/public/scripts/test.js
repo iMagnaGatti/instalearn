@@ -103,7 +103,7 @@ async function inviaTest()
     {
         const ogg=await risp.json();
         //visualizza punteggio
-        window.location.replace("./risultato.html?punteggio="+ogg.Punteggio);
+        window.location.replace("./risultato.html?risultato="+ogg.Punteggio);
     }
     else
     {
