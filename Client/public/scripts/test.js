@@ -110,5 +110,6 @@ async function inviaTest()
         window.location.replace("./error.html");
     }
     removeCookie("Id_test");
+    removeCookie("Id_topic");
     removeCookie("Skill");
 }
