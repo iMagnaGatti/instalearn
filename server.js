@@ -40,7 +40,6 @@ const urlencodedParser = bodyParser.urlencoded({ extended: true });
 mongoose.connect(""+process.env.DATABASE_URL+"",{useNewUrlParser: true});
 const db=mongoose.connection;
 
-
 db.on('error',error=>console.error(error))
 db.once('open',()=>console.error('Connected to mongoose'))
 app.use(function (req, res, next) {
@@ -63,7 +62,7 @@ app.use(function (req, res, next) {
 });
 app.use(helmet());
 app.use(express.static('.'));
-//app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(rateLimit({windowMs: 10 * 60 * 1000, max: 100}));
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
