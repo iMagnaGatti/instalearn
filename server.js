@@ -328,7 +328,7 @@ app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
         return res.sendStatus(400);
         if(punteggio>60)
         {
-            await db.collection("skills").findOneAndUpdate({id_user:Id, rank:r3.rank},{cmrank:r3.rank});
+            await db.collection("skills").findOneAndUpdate({id_user:Id, rank:r3.rank},{rank:r3.rank});
         }
         await db.collection('punteggio_test').insertOne({id_test:IdTest,id_utente:Id,punteggio:punteggio});
         return res.status(200).send({Id_test:IdTest,Id_utente:Id,Punteggio:parseInt(punteggio)});
