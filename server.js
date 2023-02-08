@@ -127,7 +127,7 @@ app.post('/signup',express.json(),async (req,res)=>{
         var arr=await materie.toArray();
         for(var d  of arr)
         {
-            await db.collection('skills').insertOne({rank:1,id_topic:d._id.valueOf(),id_user:id}); 
+            await db.collection('skills').insertOne({rank:0,id_topic:d._id.valueOf(),id_user:id}); 
         }
         return res.sendStatus(200);
     }

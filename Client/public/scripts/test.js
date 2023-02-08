@@ -18,7 +18,7 @@ async function caricaTest()
             console.log(nome);
             materie+='<option style="font-size: 20px;">'+nome+'</option>';
             //qua devi fare che per ogni test metti un bottone che se lo premi viene chiamata la funzione cookieTest( con parametri Id_utente:id_utente, Id_topic:test.id_topic e skill:test.rank)
-            s+='<div class="col-lg-6" data-aos="fade-up" data-aos-delay="400"><div class="card-item"><div class="row"><div class="col-xl-5"><div class="card-bg" style="background-image: url(assets/img/funz.png);"></div></div><div class="col-xl-7 d-flex align-items-center"><div class="card-body"><h4 class="card-title">'+nome+' Modulo '+test.rank+' </h4><p>In questo modulo troverai 10 domande a risposta multipla. Per superare il test dovrai dare almeno 7 risposte corrette.</p></div><button onclick="cookiesTest(\''+test.id_topic+'\','+test.rank+')">ESEGUI IL TEST</button></div></div></div></div>';
+            s+='<div class="col-lg-6" data-aos="fade-up" data-aos-delay="400"><div class="card-item"><div class="row"><div class="col-xl-5"><div class="card-bg" style="background-image: url(assets/img/funz.png);"></div></div><div class="col-xl-7 d-flex align-items-center"><div class="card-body"><h4 class="card-title">'+nome+' Modulo '+(test.rank+1)+' </h4><p>In questo modulo troverai 10 domande a risposta multipla. Per superare il test dovrai dare almeno 7 risposte corrette.</p></div><button onclick="cookiesTest(\''+test.id_topic+'\','+(test.rank+1)+')">ESEGUI IL TEST</button></div></div></div></div>';
         }
         document.getElementById("services-cards").innerHTML=s;
     }

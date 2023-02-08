@@ -15,7 +15,7 @@ async function login()
     console.log(ogg);
     let id=ogg.Id;
     await setCookie("instalearn_id",id,0.5);
-    window.location.href = "index.html";
+    window.location.href = "profilo.html";
     }
     else
     alert("Le credenziali non corrispondono ad un account, riprova");
