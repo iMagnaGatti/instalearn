@@ -323,11 +323,18 @@ app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
             }
         }
         let punteggio=p*10;
+        const r=await db.collection('test').findOne({_id: new ObjectId(IdTest)});
+        if(!r)
+        return res.sendStatus(400);
+        if(punteggio>60)
+        {
+            await db.collection("skills").findOneAndUpdate({id_user:Id, rank:r.rank},{rank:r.rank});
+        }
         await db.collection('punteggio_test').insertOne({id_test:IdTest,id_utente:Id,punteggio:punteggio});
-        res.status(200).send({Id_test:IdTest,Id_utente:Id,Punteggio:parseInt(punteggio)});
+        return res.status(200).send({Id_test:IdTest,Id_utente:Id,Punteggio:parseInt(punteggio)});
     }
     else
-    res.sendStatus(400);
+    return res.sendStatus(400);
 });
 
 //getTestDisponibiliPerUtente

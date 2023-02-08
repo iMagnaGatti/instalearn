@@ -8,7 +8,26 @@ async function signup()
     var descrizione=document.getElementById('descrizione').value.toString();
     var pass=document.getElementById('password').value.toString();
     var pass2=document.getElementById('password2').value.toString();
-    
+    if(nome.length==0)
+    {
+        alert("Inserisci il nome");
+    }
+    else if(cognome.length==0)
+    {
+        alert("Inserisci il cognome");
+    }
+    else if(email.length==0)
+    {
+        alert("Inserisci l'email");
+    }
+    else if(username.length==0)
+    {
+        alert("Inserisci l'username");
+    }
+    else if(descrizione.length==0)
+    {
+        alert("Inserisci la descrizione");
+    }
     var controllo=(pass.length>=8);
     let maiuscola=false,numero=false;
     console.log(controllo);
