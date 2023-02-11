@@ -402,12 +402,15 @@
                         "description": "OK, restituisce le materie",
                         "schema":
                         {
-                            "type":"array",
+                            "required":["Materie"],
+                            "properties":{ "Materie":{"type":"array",
                             "items":
                             {
                                 "$ref":"#/definitions/Materia"
+                            }}
                             }
                         }
+                        
                     },
                     "400":{
                         "description": "Non esistono materie"
@@ -627,8 +630,8 @@
         },
         "Materia":
         {
-            "required":["IdMateria","Nome"],
-            "properties":{"IdMateria":{"type":"string"},"Nome":{"type":"string"}}
+            "required":["Id","Nome"],
+            "properties":{"Id":{"type":"string"},"Nome":{"type":"string"}}
         },
         "RispostaTest":
         {
