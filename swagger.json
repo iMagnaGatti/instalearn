@@ -82,7 +82,10 @@
                         "description": "OK, restituisce l'id dell'utente per creare la sessione",
                         "schema":
                         {
-                            "$ref":"#/definitions/IdUtente"
+                            "required":["Id"],
+                            "properties":{
+                                "Id":{"type":"string"}
+                            }
                         }
                         
                     },
@@ -101,12 +104,17 @@
                 "summary": "Permette di ricercare un insegnante in base ad un topic e a ad un livello di abilità",
                 "parameters":[{
                     "in": "body",
-                    "name": "TopicSkillUtente",
+                    "name": "InfoInsegnante",
                     "description": "Un Json composto da un id topic, un livello di skill e un id utente",
                     "required":"true",
                     "schema":
                     {
-                        "$ref":"#/definitions/TopicSkillUtente"
+                        "required":["Id_topic","Skill","User_id"],
+                        "properties":{
+                            "Id_topic":{"type":"string"},
+                            "Skill":{"type":"integer"},
+                            "User_id":{"type":"string"}
+                        }
                     }
                 }],
                 "responses": {
@@ -114,7 +122,11 @@
                         "description": "OK, restituisce un Array di Insegnanti disponibili",
                         "schema":
                         {
-                            "$ref":"#/definitions/ArrayDiInsegnanti"
+                            "type":"array",
+                            "items":
+                            {
+                                "$ref":"#/definitions/Insegnante"
+                            }
                         }
                         
                     },
@@ -133,12 +145,16 @@
                 "summary": "Permette di creare un test",
                 "parameters":[{
                     "in": "body",
-                    "name": "TopicSkillUtente",
+                    "name": "InfoTest",
                     "description": "Un Json composto da un id topic, un livello di skill e un id utente (non obbligatorio)",
                     "required":"true",
                     "schema":
                     {
-                        "$ref":"#/definitions/TopicSkillUtente"
+                        "required":["Id_topic","Skill","Id"],
+                        "properties":{
+                            "Id_topic":{"type":"string"},
+                            "Skill":{"type":"integer"}
+                        }
                     }
                 }],
                 "responses": {
@@ -147,7 +163,17 @@
 
                         "schema":
                         {
-                            "$ref":"#/definitions/ArrayDiDomande"
+                            "required":["Id_test","Domande"],
+                            "properties":{
+                                "Id_test":{"type":"string"},
+                                "Domande":{
+                                "type":"array",
+                
+                                "items":
+                                {
+                                    "$ref":"#/definitions/DomandaGenerale"
+                                }}
+                            }
                         }
                         
                     },
@@ -171,7 +197,10 @@
                     "required":"true",
                     "schema":
                     {
-                        "$ref":"#/definitions/IdUtente"
+                        "required":["Id"],
+                        "properties":{
+                            "Id":{"type":"string"}
+                        }
                     }
                 }],
                 "responses": {
@@ -179,7 +208,21 @@
                         "description": "OK, restituisce un Array contente le Skills di un utente",
                         "schema":
                         {
-                            "$ref":"#/definitions/ArrayDiTopicSkill"
+                            "required":["Tests"],
+                            "properties":{
+                                "Tests":{
+                                    "type":"array",
+                                    "items":
+                                    {
+                                        "required":["id_topic","rank","id_user"],
+                                        "properties":{
+                                            "id_topic":{"type":"string"},
+                                            "rank":{"type":"integer"},
+                                            "id_user":{"type":"integer"}
+                                        }
+                                    }
+                                }
+                            }   
                         }
                     },
                     "400":{
@@ -202,7 +245,9 @@
                     "required":"true",
                     "schema":
                     {
-                        "$ref":"#/definitions/IdMateria"
+                        "required":["IdMateria"],
+                        "properties":{"IdMateria":{"type":"string"}}
+
                     }
                 }],
                 "responses": {
@@ -210,7 +255,8 @@
                         "description": "OK, restituisce le informazioni sulla materia",
                         "schema":
                         {
-                            "$ref":"#/definitions/Materia"
+                            "required":["_id","topic"],
+                            "properties":{"_id":{"type":"string"},"topic":{"type":"string"}}
                         }
                     },
                     "400":{
@@ -233,7 +279,8 @@
                     "required":"true",
                     "schema":
                     {
-                        "$ref":"#/definitions/Username"
+                        "required":["Username"],
+                        "properties":{"Username":{"type":"string"}}
                     }
                 }],
                 "responses": {
@@ -241,7 +288,37 @@
                         "description": "OK, restituisce le informazioni sull'utente",
                         "schema":
                         {
-                            "$ref":"#/definitions/UserPublic"
+                            "required": [
+                                "Nome",
+                                "Cognome",
+                                "Username",
+                                "Descrizione",
+                                "Skills"
+                            ],
+                            "properties": {
+                                "Nome": {
+                                    "type": "string"
+                                },
+                                "Cognome": {
+                                    "type": "string"
+                                },
+                                "Descrizione":{"type":"string"},
+                                "Username":{"type":"string"},
+                                "Skills":{
+                                        "type":"array",
+                                        "items":
+                                        {
+                                            "required":["Id_topic","Skill"],
+                                            "properties":{
+                                                "Id_topic":{"type":"string"},
+                                                "Skill":{"type":"integer"},
+                                                "Id":{"type":"string"},
+                                                "Materia":{"type":"string"}
+                                            }
+                                        }
+                                
+                                }
+                            }
                         }
                     },
                     "400":{
@@ -264,7 +341,10 @@
                     "required":"true",
                     "schema":
                     {
-                        "$ref":"#/definitions/IdUtente"
+                        "required":["Id"],
+                        "properties":{
+                            "Id":{"type":"string"}
+                        }
                     }
                 }],
                 "responses": {
@@ -272,7 +352,36 @@
                         "description": "OK, restituisce le informazioni private sull'utente",
                         "schema":
                         {
-                            "$ref":"#/definitions/UserPrivate"
+                            "required": [
+                                "Nome",
+                                "Cognome",
+                                "Username",
+                                "Descrizione",
+                                "Email",
+                                "Skills"
+                            ],
+                            "properties": {
+                                "Nome": {
+                                    "type": "string"
+                                },
+                                "Cognome": {
+                                    "type": "string"
+                                },
+                                "Email":{"type":"string"},
+                                "Descrizione":{"type":"string"},
+                                "Username":{"type":"string"},
+                                "Skills":{
+                                        "type":"array",
+                                        "items":
+                                        {
+                                            "required":["Id_topic","Skill"],
+                                            "properties":{
+                                                "Id_topic":{"type":"string"},
+                                                "Skill":{"type":"integer"}
+                                            }
+                                        }
+                                }
+                            }
                         }
                     },
                     "400":{
@@ -293,7 +402,11 @@
                         "description": "OK, restituisce le materie",
                         "schema":
                         {
-                            "$ref":"#/definitions/ArrayDiMaterie"
+                            "type":"array",
+                            "items":
+                            {
+                                "$ref":"#/definitions/Materia"
+                            }
                         }
                     },
                     "400":{
@@ -316,7 +429,34 @@
                     "required":"true",
                     "schema":
                     {
-                        "$ref":"#/definitions/UserModified"
+                        "required": [
+                            "Id",
+                            "Email",
+                            "Password",
+                            "Nome",
+                            "Cognome",
+                            "Username",
+                            "Descrizione"
+                        ],
+                        "properties": {
+                            "Id":{"type":"string"},
+                            "Email": {
+                                "type": "string"
+                            },
+                            "Password":
+                            {
+                                "type":"string"
+                            },
+                            "Nome": {
+                                "type": "string"
+                            },
+                            "Cognome": {
+                                "type": "string"
+                            },
+                            "Username":{"type":"string"},
+                            "NewPassword":{"type":"string"},
+                            "Descrizione":{"type":"string"}
+                        }
                     }
                 }],
                 "responses": {
@@ -350,11 +490,43 @@
                     "200": {
                         "description": "OK, restituisce il risultato",
                         "schema":{
-                            "$ref":"#/definitions/Risultato"
+                            "required":["Id_test","Id_utente","Punteggio"],
+                            "properties":{
+                                "Id_test":{"type":"string"},
+                                "Id_utente":{"type":"string"},
+                                "Punteggio":{"type":"string"}
+                            }
                         }
                     },
                     "400":{
                         "description": "Errore, modifiche non apportate"
+                    }
+                }
+            }
+        },
+        "/inviaMessaggioAiuto":
+        {
+            "post": {
+                "tags": [
+                    "Utenti"
+                ],
+                "summary": "Permette di inviare un messaggio di aiuto agli admin",
+                "parameters":[{
+                    "in": "body",
+                    "name": "Messaggio",
+                    "description": "Messaggio dell'utente",
+                    "required":"true",
+                    "schema":
+                    {
+                        "$ref":"#/definitions/Mail"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description":"Richiesta andata a buon fine"
+                    },
+                    "400":{
+                        "description": "Errore, messaggio malformato"
                     }
                 }
             }
@@ -388,57 +560,6 @@
                 "Descrizione":{"type":"string"}
             }
         },
-        "UserPublic": {
-            "required": [
-                "Nome",
-                "Cognome",
-                "Username",
-                "Descrizione",
-                "Skills"
-            ],
-            "properties": {
-                "Nome": {
-                    "type": "string"
-                },
-                "Cognome": {
-                    "type": "string"
-                },
-                "Descrizione":{"type":"string"},
-                "Username":{"type":"string"},
-                "Skills":{
-                    "$ref":"#/definitions/ArrayDiTopicSkill"
-                }
-            }
-        },
-        "UserPrivate": {
-            "required": [
-                "Nome",
-                "Cognome",
-                "Username",
-                "Descrizione",
-                "Email",
-                "Skills"
-            ],
-            "properties": {
-                "Nome": {
-                    "type": "string"
-                },
-                "Cognome": {
-                    "type": "string"
-                },
-                "Email":{"type":"string"},
-                "Descrizione":{"type":"string"},
-                "Username":{"type":"string"},
-                "Skills":{
-                    "$ref":"#/definitions/ArrayDiTopicSkill"
-                }
-            }
-        },
-        "Username":
-        {
-            "required":["Username"],
-            "properties":{"Username":{"type":"string"}}
-        },
         "UserCredentials": {
             "required": [
                 "Email",
@@ -454,23 +575,6 @@
                 }
             }
         },
-        "IdUtente":
-        {
-            "required":["Id"],
-            "properties":{
-                "Id":{"type":"string"}
-            }
-        },
-        "TopicSkillUtente":
-        {
-            "required":["Id_topic","Skill"],
-            "properties":{
-                "Id_topic":{"type":"string"},
-                "Skill":{"type":"integer"},
-                "Id":{"type":"string"},
-                "Materia":{"type":"string"}
-            }
-        },
         "Insegnante":
         {
             "required":["Skill","Username"],
@@ -479,58 +583,33 @@
                 "Username":{"type":"string"}
             }
         },
-        "ArrayDiInsegnanti":
-        {
-            "type":"array",
-            "items":
-            {
-                "$ref":"#/definitions/Insegnante"
-            }
-        },
         "Opzione":
         {
-            "required":["Testo","Id_opzione"],
+            "required":["Testo","Id"],
             "properties":
             {
-                "Id_opzione":{"type":"string"},
+                "Id":{"type":"string"},
                 "Testo":{"type":"string"}
             }
         },
-        "IdOpzione":
+        "DomandaGenerale":
         {
-            "required":["Id_opzione"],
+            "required":["Domanda","Opzioni"],
             "properties":
             {
-                "Id_opzione":{"type":"string"}
+                "Domanda":{
+                    "required":["Id_domanda","Testo"],
+                    "properties":{
+                    "Id_domanda":{"type":"string"},
+                    "Testo":{"type":"string"}}
+                },
+                "Opzioni":{            "type":"array",
+                "items":
+                {
+                    "$ref":"#/definitions/Opzione"
+                }}
             }
-        }
-        ,
-        "ArrayDiOpzioni":
-        {
-            "type":"array",
-            "items":
-            {
-                "$ref":"#/definitions/Opzione"
-            }
-        },
-        "Domanda":
-        {
-            "required":["Id_domanda","Testo","Opzioni"],
-            "properties":
-            {
-                "Id_domanda":{"type":"string"},
-                "Testo":{"type":"string"},
-                "Opzioni":{"$ref":"#/definitions/ArrayDiOpzioni"}
-            }
-        },
-        "ArrayDiDomande":
-        {
-            "type":"array",
             
-            "items":
-            {
-                "$ref":"#/definitions/Domanda"
-            }
         },
         "Test":
         {
@@ -538,100 +617,18 @@
             "properties":
             {
                 "Id_test":{"type":"string"},
-                "Domande":{"$ref":"#/definitions/ArrayDiDomande"}
-            }
-        },
-        "BaseTest":
-        {
-            "required":["Id_test","Id_topic","Skill"],
-            "properties":
-            {
-                "Id_test":{"type":"string"},
-                "Id_topic":{"type":"integer"},
-                "Skill":{"type":"integer"}
-            }
-        },
-        "ArrayDiBaseTest":
-        {
-            "type":"array",
+                "Domande":{            "type":"array",
             
-            "items":
-            {
-                "$ref":"#/definitions/BaseTest"
+                "items":
+                {
+                    "$ref":"#/definitions/DomandaGenerale"
+                }}
             }
-        },
-        "IdMateria":
-        {
-            "required":["IdMateria"],
-            "properties":{"IdMateria":{"type":"string"}}
         },
         "Materia":
         {
             "required":["IdMateria","Nome"],
             "properties":{"IdMateria":{"type":"string"},"Nome":{"type":"string"}}
-        },
-        "ArrayDiMaterie":
-        {
-            "type":"array",
-            "items":
-            {
-                "$ref":"#/definitions/Materia"
-            }
-        },
-        "ArrayDiTopicSkill":
-        {
-            "type":"array",
-            "items":
-            {
-                "$ref":"#/definitions/TopicSkillUtente"
-            }
-        },
-        "UserModified": {
-            "required": [
-                "Id",
-                "Email",
-                "Password",
-                "Nome",
-                "Cognome",
-                "Username",
-                "Descrizione"
-            ],
-            "properties": {
-                "Id":{"type":"string"},
-                "Email": {
-                    "type": "string"
-                },
-                "Password":
-                {
-                    "type":"string"
-                },
-                "Nome": {
-                    "type": "string"
-                },
-                "Cognome": {
-                    "type": "string"
-                },
-                "Username":{"type":"string"},
-                "NewPassword":{"type":"string"},
-                "Descrizione":{"type":"string"}
-            }
-        },
-        "Risultato":
-        {
-            "required":["Id_test","Id_utente","Punteggio"],
-            "properties":{
-                "Id_test":{"type":"string"},
-                "Id_utente":{"type":"string"},
-                "Punteggio":{"type":"string"}
-            }
-        },
-        "ArrayDiRisposte":
-        {
-            "type":"array",
-            "items":
-            {
-                "$ref":"#/definitions/IdOpzione"
-            }
         },
         "RispostaTest":
         {
@@ -639,7 +636,26 @@
             "properties":{
                 "Id_utente":{"type":"string"},
                 "Id_test":{"type":"string"},
-                "Risposte":{"$ref":"#/definitions/ArrayDiRisposte"}
+                "Risposte":{
+                    "type":"array",
+                    "items":
+                    {
+                        "required":["id_opzione"],
+                        "properties":
+                        {
+                            "id_opzione":{"type":"string"}
+                        }
+                    }
+                }
+            }
+        },
+        "Mail":{
+            "required":["Nome","Email","Soggetto","Messaggio"],
+            "properties":{
+                "Nome":{"type":"string"},
+                "Email":{"type":"string"},
+                "Soggetto":{"type":"string"},
+                "Messaggio":{"type":"string"}
             }
         }
         
