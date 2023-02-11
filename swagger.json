@@ -214,8 +214,9 @@
                                     "type":"array",
                                     "items":
                                     {
-                                        "required":["id_topic","rank","id_user"],
+                                        "required":["_id","id_topic","rank","id_user"],
                                         "properties":{
+                                            "_id":{"type":"string"},
                                             "id_topic":{"type":"string"},
                                             "rank":{"type":"integer"},
                                             "id_user":{"type":"integer"}
