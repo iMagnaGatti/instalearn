@@ -1,31 +1,44 @@
-
-const a=require("../server.js");
-const { createMocks }=require("node-mocks-http");
+const {app}= require('../server.js');
+const request=require('request');
+const fetch = require("node-fetch");
+const url='http://127.0.0.1:3000/signup';
 
 describe("POST server.js/signup", () => {
+
   it("should return 400, missing data", async () => {
-    const { req, res } = createMocks({ method: "POST" });
-    await signup(req, res);
-    expect(res.statusCode).toBe(400);
+    const req= {};
+    const res=await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(req)
+    });
+    expect(res.status).toBe(400);
   });
-  it("should return 400, email already exist", async () => {
-    const { req, res } = createMocks({
-      method: "POST",
-      body: { 
+
+  it("email already exists", async () => {
+    const req= {
         Nome: "armando" ,
         Cognome: "Pellegrini",
         Username: "armypelle",
         Password: "Password_123",
         Descrizione: "prova",
         Email: "armypelle69@gmail.com"
-      
-      },
+    };
+    const res=await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(req)
     });
-    await signup(req, res);
-    expect(res.statusCode).toBe(400);
-
+    expect(res.status).toBe(400);
   });
-  
+
+
   
   // it("should return 200, created", async () => {
   //   const { req, res } = createMocks({
