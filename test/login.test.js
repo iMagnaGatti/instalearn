@@ -37,7 +37,7 @@ describe("POST server.js/login", () => {
   //        Password: "Password123"
   //     },
   //   });
-  //   await signup(req, res);
+  //   await login(req, res);
   //   expect(res.statusCode).toBe(200);
   // });
 });
