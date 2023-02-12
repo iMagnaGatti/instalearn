@@ -1,8 +1,9 @@
-import { createMocks } from "node-mocks-http";
-import signup from "server.js/signup";
+
+const a=require("../server.js");
+const { createMocks }=require("node-mocks-http");
 
 describe("POST server.js/signup", () => {
-  it("should return 500, missing data", async () => {
+  it("should return 400, missing data", async () => {
     const { req, res } = createMocks({ method: "POST" });
     await signup(req, res);
     expect(res.statusCode).toBe(400);

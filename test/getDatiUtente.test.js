@@ -1,5 +1,6 @@
-import { createMocks } from "node-mocks-http";
-import signup from "server.js/getDatiUtente";
+
+const a=require("../server.js");
+const { createMocks }=require("node-mocks-http");
 
 describe("POST server.js/getDatiUtente", () => {
   it("should return 400, username doesn't exist", async () => {
