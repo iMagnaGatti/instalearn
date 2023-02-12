@@ -348,7 +348,7 @@ app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
 //getTestDisponibiliPerUtente
 app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(req.body.Id);
-    if(!Id)
+    if(!id_utente)
     return res.sendStatus(400);
     const risp=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     if(risp)
@@ -416,7 +416,7 @@ app.post('/getDatiUtente',express.json(),async (req,res)=>{
 //getDatiSeStesso(id_utente)
 app.post('/getDatiSeStesso',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(req.body.Id);
-    if(!Id)
+    if(!id_utente)
     return res.sendStatus(400);
     const dati_utente=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     
@@ -455,7 +455,7 @@ app.post('/inviaMessaggioAiuto',express.json(),async (req,res)=>{
     const email=sanitizer.escape(req.body.Email);
     const soggetto=sanitizer.escape(req.body.Soggetto);
     const messaggio=sanitizer.escape(req.body.Messaggio);
-    if(!nome||!email||!soggetto||!password)
+    if(!nome||!email||!soggetto||!messaggio)
     return res.sendStatus(400);
     await db.collection('messaggi_aiuto').insertOne({nome:nome,email:email,soggetto:soggetto,messaggio:messaggio});
     return res.sendStatus(200);
