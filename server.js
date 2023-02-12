@@ -1,10 +1,11 @@
 
-console.log("lol bro");require('dotenv').config();
-
+console.log("lol bro");
+require('dotenv').config();
 const express= require('express');
 const swaggerUi=require('swagger-ui-express');
 const swaggerDocument=require('./swagger.json');
 const app=express();
+module.exports={app};
 app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 const mongoose = require('mongoose');
 const bodyParser=require('body-parser');
@@ -19,7 +20,7 @@ const transporter = nodemailer.createTransport({
 
 var CryptoJS = require("crypto-js");
 const cors = require('cors');
-const mode="live";
+const mode="test";
 const whitelist = mode === "test" ? ['http://127.0.0.1:5500']:['instalearn-364320.web.app', 'instalearn-364320.firebaseapp.com'];
 var corsOptions = {
     origin: function (origin, callback) {
@@ -43,7 +44,7 @@ mongoose.connect(""+process.env.DATABASE_URL+"",{useNewUrlParser: true});
 const db=mongoose.connection;
 
 db.on('error',error=>console.error(error))
-db.once('open',()=>console.error('Connected to mongoose'))
+db.once('open',()=>console.log('Connected to mongoose'))
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
