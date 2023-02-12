@@ -1,5 +1,5 @@
 import { createMocks } from "node-mocks-http";
-import signup from "server.js/signup";
+import signup from "server.js/login";
 
 describe("POST server.js/login", () => {
   it("should return 400, no password", async () => {
@@ -29,7 +29,7 @@ describe("POST server.js/login", () => {
   });
   
   
-  // it("should return 200, logged ing", async () => {
+  // it("should return 200, logged in", async () => {
   //   const { req, res } = createMocks({
   //     method: "POST",
   //     body: {
