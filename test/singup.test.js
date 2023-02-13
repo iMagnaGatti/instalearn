@@ -1,4 +1,5 @@
-const {app}= require('../server.js');
+const {app,server}= require('../server.js');
+
 const request=require('request');
 const fetch = require("node-fetch");
 const url='http://127.0.0.1:3000/signup';
@@ -39,7 +40,7 @@ describe("POST server.js/signup", () => {
     });
     expect(res.status).toBe(400);
   });
-
+  //server.close();
 
   
   // it("should return 200, created", async () => {
@@ -57,4 +58,7 @@ describe("POST server.js/signup", () => {
   //   await signup(req, res);
   //   expect(res.statusCode).toBe(200);
   // });
+  afterAll(async () => {
+    server.close();
+  });
 });

@@ -5,7 +5,6 @@ const express= require('express');
 const swaggerUi=require('swagger-ui-express');
 const swaggerDocument=require('./swagger.json');
 const app=express();
-module.exports={app};
 app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 const mongoose = require('mongoose');
 const bodyParser=require('body-parser');
@@ -538,8 +537,5 @@ app.post('/rispondiMessaggioAiuto',express.json(),async (req,res)=>{
 });
 
 //endpoints per la chat
-
-
-
-
-app.listen(port)
+const server= app.listen(port);
+module.exports={app,server};

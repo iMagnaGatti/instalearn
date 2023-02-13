@@ -1,4 +1,5 @@
-const {app}= require('../server.js');
+const {app,server}= require('../server.js');
+
 const request=require('request');
 const fetch = require("node-fetch");
 const url='http://127.0.0.1:3000/login';
@@ -51,7 +52,7 @@ describe("POST server.js/login", () => {
     expect(res.status).toBe(400);
 
   });
-
+  //server.close();
   // it("should return 200, logged in", async () => {
   //   const { req, res } = createMocks({
   //     method: "POST",
@@ -63,4 +64,7 @@ describe("POST server.js/login", () => {
   //   await login(req, res);
   //   expect(res.statusCode).toBe(200);
   // });
+  afterAll(async () => {
+    server.close();
+  });
 });

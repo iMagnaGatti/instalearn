@@ -8,6 +8,9 @@
     "devStart": "nodemon server.js",
     "test": "jest --forceExit --maxWorkers=1"
   },
+  "jest": {
+    "testPathIgnorePatterns": ["./Client"]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
