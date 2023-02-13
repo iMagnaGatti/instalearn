@@ -106,6 +106,10 @@ app.post('/signup',express.json(),async (req,res)=>{
     //const password=createHashPwd(req.body.password);
     if(!nome||!cognome||!username||!descrizione||!email||!password)
     return res.sendStatus(400);
+
+    if(nome==""||cognome==""||username==""||password==""||email==""){
+        return res.sendStatus(400);
+    }
     const risultato=(await db.collection("users").findOne({email:email}));
     const risultato2=(await db.collection("users").findOne({username:username}))
     if(risultato||risultato2){
@@ -141,6 +145,10 @@ app.post('/login',express.json(),async (req,res)=>{
     const password=sanitizer.escape(req.body.Password);
     if(!email||!password)
     return res.sendStatus(400);
+
+    if(email==""){
+        return res.sendStatus(400);
+    }
     const ris=await db.collection('users').findOne({email:email});
     if(ris)
     {
@@ -166,6 +174,10 @@ app.post('/cercaInsegnante',express.json(),async (req,res)=>{
     const user_id=sanitizer.escape(req.body.User_id);
     if(!topic_id||!skill||!user_id)
     return res.sendStatus(400);
+
+    if(topic_id.length!=24||skill<0||skill>10||user_id.length!=24){
+        return res.sendStatus(400);
+    }
     //console.log(topic_id+" "+skill+" "+user_id);
     const ris=await db.collection('skills').find({id_topic:topic_id,id_user:{$ne:user_id},rank:{$gte:skill}});
     if(ris)
@@ -219,6 +231,11 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
     const difficoltà=parseInt(sanitizer.escape(req.body.Skill));
     if(!idMateria||!difficoltà)
     return res.sendStatus(400);
+
+
+    if(idMateria.length!=24||difficoltà<0||difficoltà>10){
+        return res.sendStatus(400);
+    }
     const domande=await db.collection('domande').find({id_materia:idMateria,livelloDomanda:difficoltà});
     if(domande){
         //inserire un nuovo test e prendere l'_id
@@ -364,8 +381,14 @@ app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
 //getMateria(id_materia)
 app.post('/getMateria',express.json(),async (req,res)=>{
     const idMateria=sanitizer.escape(req.body.IdMateria);
-    if(!idMateria)
-    return res.sendStatus(400);
+
+    if(!idMateria){
+        return res.sendStatus(400);
+    }
+    
+    if(idMateria.length!=24){
+        return res.sendStatus(400);
+    }
     const materia=await db.collection('topic').findOne({_id:new ObjectId(idMateria)});
     if(materia){
         return res.status(200).send(materia);
@@ -395,6 +418,10 @@ app.post('/getDatiUtente',express.json(),async (req,res)=>{
     //console.log(username_utente);
     if(!username_utente)
     return res.sendStatus(400);
+
+    if(username_utente==""){
+        return res.sendStatus(400);
+    }
     const risposta=await db.collection('users').findOne({username: username_utente});
     if(risposta)
     {
@@ -419,6 +446,10 @@ app.post('/getDatiSeStesso',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(req.body.Id);
     if(!id_utente)
     return res.sendStatus(400);
+
+    if(id_utente.length!=24){
+        return res.sendStatus(400);
+    }
     const dati_utente=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     
     if(dati_utente){
@@ -442,6 +473,7 @@ app.post('/getMessaggiAiuto',express.json(),async (req,res)=>{
     const id_admin=sanitizer.escape(req.body.Id_admin);
     if(!id_admin)
     return res.sendStatus(400);
+
     const risp=await db.collection('admins').findOne({_id:new ObjectId(id_admin)});
     if(risp)
     {
@@ -458,6 +490,10 @@ app.post('/inviaMessaggioAiuto',express.json(),async (req,res)=>{
     const messaggio=sanitizer.escape(req.body.Messaggio);
     if(!nome||!email||!soggetto||!messaggio)
     return res.sendStatus(400);
+
+    if(nome==""||cognome==""||email==""){
+        return res.sendStatus(400);
+    }
     await db.collection('messaggi_aiuto').insertOne({nome:nome,email:email,soggetto:soggetto,messaggio:messaggio});
     return res.sendStatus(200);
 });
