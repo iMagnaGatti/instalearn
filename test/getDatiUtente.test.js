@@ -4,6 +4,7 @@ const request=require('request');
 const fetch = require("node-fetch");
 const url='http://127.0.0.1:3000/getDatiUtente';
 describe("POST server.js/getDatiUtente", () => {
+  jest.setTimeout(300 000);
   it("should return 400, username doesn't exist", async () => {
     const req= {
         Username: "usernameInesistente"

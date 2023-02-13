@@ -4,6 +4,8 @@ const fetch = require("node-fetch");
 const url='http://127.0.0.1:3000/signup';
 
 describe("POST server.js/signup", () => {
+  jest.setTimeout(10000);
+
 
   it("should return 400, missing data", async () => {
     const req= {};

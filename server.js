@@ -1,5 +1,5 @@
 
-console.log("lol bro");
+//console.log("lol bro");
 require('dotenv').config();
 const express= require('express');
 const swaggerUi=require('swagger-ui-express');
@@ -44,7 +44,7 @@ mongoose.connect(""+process.env.DATABASE_URL+"",{useNewUrlParser: true});
 const db=mongoose.connection;
 
 db.on('error',error=>console.error(error))
-db.once('open',()=>console.log('Connected to mongoose'))
+//db.once('open',()=>console.log('Connected to mongoose'))
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
@@ -96,7 +96,7 @@ function decryptionWithCryptoJS(cipher) {
     return plainText.toString(CryptoJS.enc.Utf8);
 }
 app.post('/signup',express.json(),async (req,res)=>{
-    console.log(req.body);
+    //console.log(req.body);
     const nome=sanitizer.escape(req.body.Nome);
     const cognome=sanitizer.escape(req.body.Cognome);
     const username=sanitizer.escape(req.body.Username);
@@ -124,7 +124,7 @@ app.post('/signup',express.json(),async (req,res)=>{
             }
         );
         const id=risp3.insertedId.valueOf();
-        console.log(id);
+        //console.log(id);
         const materie=await db.collection('topic').find();
         var arr=await materie.toArray();
         for(var d  of arr)
@@ -144,9 +144,9 @@ app.post('/login',express.json(),async (req,res)=>{
     const ris=await db.collection('users').findOne({email:email});
     if(ris)
     {
-        console.log(ris.password);
+        //console.log(ris.password);
         var decriptata=decryptionWithCryptoJS(ris.password);
-        console.log(decriptata);
+        //console.log(decriptata);
         if(decriptata==password)
         {
         return res.status(200).send({Id: ris._id.valueOf()});
@@ -166,7 +166,7 @@ app.post('/cercaInsegnante',express.json(),async (req,res)=>{
     const user_id=sanitizer.escape(req.body.User_id);
     if(!topic_id||!skill||!user_id)
     return res.sendStatus(400);
-    console.log(topic_id+" "+skill+" "+user_id);
+    //console.log(topic_id+" "+skill+" "+user_id);
     const ris=await db.collection('skills').find({id_topic:topic_id,id_user:{$ne:user_id},rank:{$gte:skill}});
     if(ris)
     {
@@ -176,7 +176,7 @@ app.post('/cercaInsegnante',express.json(),async (req,res)=>{
         {
             
             const tot=await db.collection('users').findOne({_id:new ObjectId(doc.id_user)});
-            console.log(doc);
+            //console.log(doc);
             if(tot)
             {
                 await arr.push({Username:tot.username,Skill:doc.rank});
@@ -232,18 +232,18 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
         {
             
             var opzioneGiusta=await db.collection('opzione').find({id_domanda:domanda._id.valueOf(), giusta:true});
-            console.log(opzioneGiusta);
+            //console.log(opzioneGiusta);
             var arropzioniGiuste=opzioneGiusta.toArray();
             arropzioniGiuste=await shuffle(arropzioniGiuste);
             var opzioniSbagliate=await db.collection('opzione').find({id_domanda:domanda._id.valueOf(), giusta:false});
             var arrOpzioni=await opzioniSbagliate.toArray();
             arrOpzioni=shuffle(arrOpzioni);
-            console.log(domanda);
+            //console.log(domanda);
             var opzioniDomanda=arrOpzioni.slice(0,1); //prende i primi 3 elementi dell'array
             await opzioniDomanda.push(await arropzioniGiuste[0]); //aggiungo l'opzione giusta
             opzioniDomanda=await shuffle(opzioniDomanda); //ordino random
             var opzioni_fatte=[];
-            console.log(domanda);
+            //console.log(domanda);
             for await (var opzione of opzioniDomanda){
                     if(opzione){
                     opzioni_fatte.push({Id:opzione._id.valueOf(), Testo:opzione.testo});
@@ -267,7 +267,7 @@ app.post('/generaTest',express.json(),async (req,res)=>{ //idmateria e difficolt
 
 //modificaDatiUtente(id_utente, datiUtente)
 app.post('/modificaDatiUtente',express.json(),async (req,res)=>{
-    console.log(req.body);
+    //console.log(req.body);
     const id=sanitizer.escape(req.body.Id)
     const nome=sanitizer.escape(req.body.Nome);
     const cognome=sanitizer.escape(req.body.Cognome);
@@ -322,11 +322,11 @@ app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
         let p=0;
         for(var r of arr)
         {
-            console.log(r);
+           // console.log(r);
             const risp=await db.collection('opzione').findOne({_id:new ObjectId(r.id_opzione)});
             if(risp)
             {
-                console.log(risp);
+                //console.log(risp);
                 if(risp.giusta)
                     p++;
             }
@@ -392,13 +392,13 @@ app.post('/getMaterie',express.json(),async (req,res)=>{
 //getDatiUtente(username_utente)
 app.post('/getDatiUtente',express.json(),async (req,res)=>{
     const username_utente=sanitizer.escape(req.body.Username);
-    console.log(username_utente);
+    //console.log(username_utente);
     if(!username_utente)
     return res.sendStatus(400);
     const risposta=await db.collection('users').findOne({username: username_utente});
     if(risposta)
     {
-        console.log(risposta._id.valueOf());
+        //CONSOLE.LOG(risposta._id.valueOf());
         var skills=await db.collection('skills').find({id_user:risposta._id.valueOf()});
         skills=await skills.toArray();
         var att=[];
@@ -484,10 +484,10 @@ app.post('/rispondiMessaggioAiuto',express.json(),async (req,res)=>{
 
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
-                  console.log(error);
+                  //console.log(error);
                   return res.status(500);
                 } else {
-                  console.log('Email sent: ' + info.response);
+                  //console.log('Email sent: ' + info.response);
                 }
               });
             

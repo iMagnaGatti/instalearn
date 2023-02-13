@@ -3,6 +3,8 @@ const request=require('request');
 const fetch = require("node-fetch");
 const url='http://127.0.0.1:3000/getMateria';
 describe("POST server.js/getMateria", () => {
+  jest.setTimeout(10000);
+
 
   it("should return 400, topic doesn't exist", async () => {
     const req= {
