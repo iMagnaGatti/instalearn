@@ -294,6 +294,10 @@ app.post('/modificaDatiUtente',express.json(),async (req,res)=>{
     password_new=password;
     const descrizione=sanitizer.escape(req.body.Descrizione);
     const username=sanitizer.escape(req.body.Username);
+
+    if(id.length!=24||nome==""||cognome==""||email==""||password==""||password_new==""||username==""){
+        return res.sendStatus(400);
+    }
     if(id&&nome&&cognome&&email&&password&&descrizione)
     {
         const ris=await db.collection('users').findOne({_id:new ObjectId(id)});
@@ -332,7 +336,9 @@ app.post('/inviaRispostaTest',express.json(),async (req,res)=>{
     var arr=JSON.parse(req.body.Risposte);
     const IdTest=sanitizer.escape(req.body.Id_test);
     const Id=sanitizer.escape(req.body.Id_utente);
-
+    if(IdTest.length!=24||Id.length!=24){
+        return res.sendStatus(400);
+    }
     if(arr&&Id&&IdTest)
     {
         let p=0;
@@ -367,6 +373,10 @@ app.post('/getTestDisponibiliPerUtente',express.json(),async (req,res)=>{
     const id_utente=sanitizer.escape(req.body.Id);
     if(!id_utente)
     return res.sendStatus(400);
+
+    if(id_utente.length!=24){
+        return res.sendStatus(400);
+    }
     const risp=await db.collection('users').findOne({_id:new ObjectId(id_utente)});
     if(risp)
     {
@@ -473,6 +483,9 @@ app.post('/getMessaggiAiuto',express.json(),async (req,res)=>{
     if(!id_admin)
     return res.sendStatus(400);
 
+    if(id_admin.length!=24){
+        return res.sendStatus(400);
+    }
     const risp=await db.collection('admins').findOne({_id:new ObjectId(id_admin)});
     if(risp)
     {
@@ -489,7 +502,7 @@ app.post('/inviaMessaggioAiuto',express.json(),async (req,res)=>{
     const messaggio=sanitizer.escape(req.body.Messaggio);
     if(!nome||!email||!soggetto||!messaggio)
     return res.sendStatus(400);
-
+    
     if(nome==""||cognome==""||email==""){
         return res.sendStatus(400);
     }
@@ -503,6 +516,10 @@ app.post('/rispondiMessaggioAiuto',express.json(),async (req,res)=>{
     const risposta=sanitizer.escape(risposta);
     if(!id_admin||!id_messaggio||!risposta)
     return res.sendStatus(400);
+
+    if(id_admin.length!=24||id_messaggio.length!=24||risposta==""){
+        return res.sendStatus(400);
+    }
     const risp=await db.collection('admins').findOne({_id:new ObjectId(id_admin)});
     if(risp)
     {
